@@ -6,7 +6,7 @@ import java.awt.event.*;
 
 //==========================================> CLASS MAIN MENU <=========================================================
 
-public class MainMenu extends JFrame implements ActionListener, KeyListener{
+public class MainMenu extends JFrame {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
@@ -223,16 +223,4 @@ public class MainMenu extends JFrame implements ActionListener, KeyListener{
         setVisible(true);
 
     }
-
-    @Override
-    public void actionPerformed(ActionEvent e) { }
-
-    @Override
-    public void keyTyped(KeyEvent e) { }
-
-    @Override
-    public void keyPressed(KeyEvent e) { }
-
-    @Override
-    public void keyReleased(KeyEvent e) { }
 }
