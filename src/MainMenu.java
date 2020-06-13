@@ -3,6 +3,8 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.font.TextAttribute;
+import java.util.Map;
 
 //==========================================> CLASS MAIN MENU <=========================================================
 
@@ -36,15 +38,25 @@ public class MainMenu extends JFrame {
         this.setUndecorated(true);
         setLayout(null);
 
-        //Test Images
-        ImageIcon icon = new ImageIcon("Icons\\MainIcon.PNG");
-        setIconImage(icon.getImage());
-
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
         titleBar.setBounds(0, 0, 500, 50);
-        titleBar.setBackground(new Color(252, 185, 65));
+        titleBar.setBackground(new Color(34, 167, 240));
         titleBar.setLayout(null);
+
+        ImageIcon icon = new ImageIcon("Icons/Main_Icon.png");
+        setIconImage(icon.getImage());
+
+//==========================================> J-PANEL MAIN ICON <=======================================================
+
+        ImageIcon background = new ImageIcon("Icons/Main_Icon.png");
+        Image img = background.getImage();
+        img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
+        background = new ImageIcon(img);
+
+        JLabel mainIcon = new JLabel(background);
+        mainIcon.setBounds(10,10,30,30);
+        mainIcon.setLayout(null);
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
 
@@ -54,7 +66,7 @@ public class MainMenu extends JFrame {
 
 //==========================================> TITLE LABEL <=============================================================
 
-        titleLabel = new JLabel("Email Management System / Main Menu");
+        titleLabel = new JLabel("Main Menu");
         titleLabel.setBounds(50, 13, 350, 30);
         titleLabel.setForeground(new Color(46, 46, 49));
 
@@ -102,19 +114,25 @@ public class MainMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 32);
 
         mainLabel = new JLabel("Main Menu");
-        mainLabel.setBounds(175, 25, 300, 50);
+        mainLabel.setBounds(175, 50, 300, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
         mainLabel.setFont(font);
 
 //==========================================> INFO LABEL <==============================================================
 
-        font = new Font("Arial", Font.BOLD, 18);
-
-        infoLabel = new JLabel("About App!");
-        infoLabel.setBounds(210, 75, 105, 50);
+        infoLabel = new JLabel("Learn More...!");
+        infoLabel.setBounds(380, 10, 100, 20);
         infoLabel.setForeground(new Color(34, 167, 240));
         infoLabel.setToolTipText("Press this Text to Read the Information");
+
+        font = new Font("Arial", Font.BOLD, 14);
         infoLabel.setFont(font);
+
+        Map attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        infoLabel.setFont(font.deriveFont(attributes));
+
+//==========================================> ABOUT SECTION <===========================================================
 
         infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         infoLabel.addMouseListener(new MouseAdapter() {
@@ -123,7 +141,7 @@ public class MainMenu extends JFrame {
 
                 JTextArea textArea = new JTextArea(15, 50);
                 font = new Font("Arial", Font.BOLD, 18);
-
+                textArea.setLineWrap(true);
                 textArea.setText("Hello \n" +
                                  "Hello \n" +
                                  "Hello \n" +
@@ -132,7 +150,7 @@ public class MainMenu extends JFrame {
                 textArea.setEditable(false);
 
                 JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(null, scrollPane, "About Us", -1, null);
+                JOptionPane.showMessageDialog(MainMenu.super.rootPane, scrollPane, "About Us", -1, null);
             }
         });
 
@@ -141,7 +159,7 @@ public class MainMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 16);
 
         btn_SignUp = new JButton("Sign Up");
-        btn_SignUp.setBounds(100, 200, 120, 30);
+        btn_SignUp.setBounds(100, 175, 120, 30);
         btn_SignUp.setBackground(new Color(242, 38, 19));
         btn_SignUp.setForeground(new Color(243, 241, 239));
         btn_SignUp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -151,7 +169,8 @@ public class MainMenu extends JFrame {
         btn_SignUp.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Currently No SignUp Class is Made!");
+                dispose();
+                new SignUpMenu();
             }
         });
 
@@ -162,7 +181,13 @@ public class MainMenu extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    JOptionPane.showMessageDialog(null, "Currently No SignUp Class is Made!");
+                    dispose();
+                    new SignUpMenu();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    if (JOptionPane.showConfirmDialog (MainMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
                 }
             }
 
@@ -175,7 +200,7 @@ public class MainMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 16);
 
         btn_LogInn = new JButton("Log In");
-        btn_LogInn.setBounds(275, 200, 120, 30);
+        btn_LogInn.setBounds(275, 175, 120, 30);
         btn_LogInn.setBackground(new Color(34, 167, 240));
         btn_LogInn.setForeground(new Color(243, 241, 239));
         btn_LogInn.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -185,7 +210,8 @@ public class MainMenu extends JFrame {
         btn_LogInn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Currently No Log In Class is Made!");
+                dispose();
+                new LogInMenu();
             }
         });
 
@@ -196,7 +222,13 @@ public class MainMenu extends JFrame {
             @Override
             public void keyPressed(KeyEvent e) {
                 if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    JOptionPane.showMessageDialog(null, "Currently No Log In Class is Made!");
+                    dispose();
+                    new LogInMenu();
+                }
+                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    if (JOptionPane.showConfirmDialog (MainMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
                 }
             }
 
@@ -207,6 +239,7 @@ public class MainMenu extends JFrame {
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
         titleBar.add(titleLabel);
+        titleBar.add(mainIcon);
         titleBar.add(closeLabel);
         titleBar.add(minusLabel);
 
@@ -223,4 +256,7 @@ public class MainMenu extends JFrame {
         setVisible(true);
 
     }
+
 }
+
+//==========================================> END OF CODE <=============================================================
