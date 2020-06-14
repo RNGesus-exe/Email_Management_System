@@ -13,8 +13,8 @@ public class LogInMenu extends JFrame {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
-    private String tempUsername = "Mehroz Mustafa"; // Temp variable - Delete them after adding back end.
-    private String tempPassword = "123456";         // Temp variable - Delete them after adding back end.
+    private String tempUsername = "Mehroz"; // Temp variable - Delete them after adding back end.
+    private String tempPassword = "123";    // Temp variable - Delete them after adding back end.
 
     private JPanel titleBar = new JPanel();
     private JPanel mainBody = new JPanel();
@@ -35,8 +35,7 @@ public class LogInMenu extends JFrame {
     private JTextField     usernameField;
     private JPasswordField passwordField;
 
-    private JLabel returnIcon;
-    private JButton btn_Cancel;
+    private JButton btn_Return;
     private JButton btn_LogInn;
 
     private Font font;
@@ -268,44 +267,25 @@ public class LogInMenu extends JFrame {
 
 //==========================================> RETURN BUTTON <===========================================================
 
-        background = new ImageIcon("Icons/Return.png");
-        img = background.getImage();
-        img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
-        background = new ImageIcon(img);
+        font = new Font("Arial", Font.BOLD, 16);
 
-        returnIcon = new JLabel(background);
-        returnIcon.setBounds(10,10,30,30);
-        returnIcon.setLayout(null);
-        returnIcon.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        returnIcon.addMouseListener(new MouseAdapter() {
+        btn_Return = new JButton("Return");
+        btn_Return.setBounds(100, 235, 120, 30);
+        btn_Return.setBackground(new Color(242, 38, 19));
+        btn_Return.setForeground(new Color(243, 241, 239));
+        btn_Return.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_Return.setToolTipText("Press this button to Go Back");
+        btn_Return.setFont(font);
+
+        btn_Return.addActionListener(new ActionListener() {
             @Override
-            public void mouseClicked(MouseEvent e) {
+            public void actionPerformed(ActionEvent e) {
                 dispose();
                 new MainMenu();
             }
         });
 
-//==========================================> CANCEL BUTTON <===========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
-
-        btn_Cancel = new JButton("Cancel");
-        btn_Cancel.setBounds(100, 235, 120, 30);
-        btn_Cancel.setBackground(new Color(242, 38, 19));
-        btn_Cancel.setForeground(new Color(243, 241, 239));
-        btn_Cancel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Cancel.setToolTipText("This Button will cancel the process");
-        btn_Cancel.setFont(font);
-
-        btn_Cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new LogInMenu();
-            }
-        });
-
-        btn_Cancel.addKeyListener(new KeyListener() {
+        btn_Return.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
 
@@ -317,7 +297,7 @@ public class LogInMenu extends JFrame {
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
                     dispose();
-                    new LogInMenu();
+                    new MainMenu();
                 }
             }
 
@@ -377,8 +357,7 @@ public class LogInMenu extends JFrame {
         mainBody.add(usernameField);
         mainBody.add(passwordField);
         mainBody.add(forgottenPassword);
-        mainBody.add(returnIcon);
-        mainBody.add(btn_Cancel);
+        mainBody.add(btn_Return);
         mainBody.add(btn_LogInn);
 
         add(titleBar);
@@ -416,10 +395,11 @@ public class LogInMenu extends JFrame {
 
 //==========================================> LOG IN CONDITION <========================================================
 
+    // You will check for the Correct Username and Password here.
     public void logInCondition() {
-        if (usernameField.getText().equals(tempUsername) && passwordField.getText().equals(tempPassword)) {
-            flag = false;
-            JOptionPane.showMessageDialog(LogInMenu.super.rootPane, "Successfully Logged In");
+        if (usernameField.getText().trim().equals(tempUsername) && passwordField.getText().trim().equals(tempPassword)) {
+            dispose();
+            new EmailMenu();
         } else {
             if (!flag) {
                 flag = true;

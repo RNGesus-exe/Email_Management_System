@@ -300,8 +300,7 @@ public class SignUpMenu extends JFrame {
         datePanel = new JDatePanelImpl(model, p);
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         dateSet = new JDateChooser();
-        dateSet.setBounds(200, 250, 200, 26);
-        add(dateSet);
+        dateSet.setBounds(200, 200, 200, 26);
 
 //==========================================> PHONE NO. LABEL <=========================================================
 
@@ -610,6 +609,7 @@ public class SignUpMenu extends JFrame {
 
         mainBody.add(dobLabel);
         mainBody.add(datePicker);
+        mainBody.add(dateSet);
 
         mainBody.add(phoneNoField);
         mainBody.add(phoneNoLabel);
@@ -691,7 +691,8 @@ public class SignUpMenu extends JFrame {
         } else {
             userData[2] = "female";
         }
-        userData[3] = datePicker.getName();
+        userData[3] = String.valueOf(date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900));
+        System.out.println(userData[3]);
         userData[4] = phoneNoField.getText().toLowerCase().trim();
         userData[5] = addressTextArea.getText().toLowerCase().trim();
         userData[6] = usernameField.getText().toLowerCase().trim();
