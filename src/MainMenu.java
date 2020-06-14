@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.TextAttribute;
+import java.awt.geom.RoundRectangle2D;
 import java.util.Map;
 
 //==========================================> CLASS MAIN MENU <=========================================================
@@ -36,26 +37,31 @@ public class MainMenu extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds(450, 200, 500, 400);
         this.setUndecorated(true);
+        setShape(new RoundRectangle2D.Double(0, 0, 500, 400, 30, 30));
         setLayout(null);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
         titleBar.setBounds(0, 0, 500, 50);
-        titleBar.setBackground(new Color(34, 167, 240));
+        titleBar.setBackground(new Color(171, 183, 183));
         titleBar.setLayout(null);
 
-        ImageIcon icon = new ImageIcon("Icons/Main_Icon.png");
+        FrameDragListener frameDragListener = new FrameDragListener(this);
+        super.addMouseListener(frameDragListener);
+        super.addMouseMotionListener(frameDragListener);
+
+        ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
         setIconImage(icon.getImage());
 
 //==========================================> J-PANEL MAIN ICON <=======================================================
 
-        ImageIcon background = new ImageIcon("Icons/Main_Icon.png");
+        ImageIcon background = new ImageIcon("Icons/Main_Logo.png");
         Image img = background.getImage();
-        img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
+        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
         background = new ImageIcon(img);
 
         JLabel mainIcon = new JLabel(background);
-        mainIcon.setBounds(10,10,30,30);
+        mainIcon.setBounds(05,05,40,40);
         mainIcon.setLayout(null);
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
@@ -69,18 +75,14 @@ public class MainMenu extends JFrame {
         titleLabel = new JLabel("Main Menu");
         titleLabel.setBounds(50, 13, 350, 30);
         titleLabel.setForeground(new Color(46, 46, 49));
-
-        font = new Font("Calibri", Font.BOLD, 20);
-        titleLabel.setFont(font);
+        titleLabel.setFont(new Font("Calibri", Font.BOLD, 20));
 
 //==========================================> CLOSE LABEL <=============================================================
-
-        font = new Font("Arial", Font.BOLD, 22);
 
         closeLabel = new JLabel("X");
         closeLabel.setBounds(475, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
-        closeLabel.setFont(font);
+        closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
 
         closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.setToolTipText("Close");
@@ -93,12 +95,10 @@ public class MainMenu extends JFrame {
 
 //==========================================> MINUS LABEL <=============================================================
 
-        font = new Font("Arial", Font.BOLD, 44);
-
         minusLabel = new JLabel("-");
         minusLabel.setBounds(450, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
-        minusLabel.setFont(font);
+        minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
 
         minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
@@ -111,12 +111,10 @@ public class MainMenu extends JFrame {
 
 //==========================================> MAIN LABEL <==============================================================
 
-        font = new Font("Arial", Font.BOLD, 32);
-
         mainLabel = new JLabel("Main Menu");
         mainLabel.setBounds(175, 50, 300, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
-        mainLabel.setFont(font);
+        mainLabel.setFont(new Font("Arial", Font.BOLD, 32));
 
 //==========================================> INFO LABEL <==============================================================
 
@@ -140,7 +138,6 @@ public class MainMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
 
                 JTextArea textArea = new JTextArea(15, 50);
-                font = new Font("Arial", Font.BOLD, 18);
                 textArea.setLineWrap(true);
                 textArea.setText("Hello \n" +
                                  "Hello \n" +
@@ -196,8 +193,6 @@ public class MainMenu extends JFrame {
         });
 
 //==========================================> LOG INN BUTTON <==========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
 
         btn_LogInn = new JButton("Log In");
         btn_LogInn.setBounds(275, 175, 120, 30);

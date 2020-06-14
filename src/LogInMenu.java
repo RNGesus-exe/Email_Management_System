@@ -4,6 +4,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.TextAttribute;
+import java.awt.geom.RoundRectangle2D;
 import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
@@ -12,13 +13,11 @@ public class LogInMenu extends JFrame {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
-    private String tempUsername = "Mehroz Mustafa"; // Temp variable - Delete them after adding back end.
-    private String tempPassword = "123456";         // Temp variable - Delete them after adding back end.
+    private String tempUsername = "Mehroz"; // Temp variable - Delete them after adding back end.
+    private String tempPassword = "123";    // Temp variable - Delete them after adding back end.
 
     private JPanel titleBar = new JPanel();
     private JPanel mainBody = new JPanel();
-
-    private Font font;
 
     private JLabel titleLabel;
     private JLabel closeLabel;
@@ -37,12 +36,14 @@ public class LogInMenu extends JFrame {
     private JPasswordField passwordField;
 
     private JButton btn_Return;
-    private JButton btn_Cancel;
     private JButton btn_LogInn;
 
+    private Font font;
     private Map attributes;
     private Boolean flag = false;
 
+    private ImageIcon background;
+    private Image img;
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
     public LogInMenu() {
@@ -52,26 +53,31 @@ public class LogInMenu extends JFrame {
         setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds(450, 200, 500, 400);
         this.setUndecorated(true);
+        setShape(new RoundRectangle2D.Double(0, 0, 500, 400, 30, 30));
         setLayout(null);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
         titleBar.setBounds(0, 0, 500, 50);
-        titleBar.setBackground(new Color(34, 167, 240));
+        titleBar.setBackground(new Color(171, 183, 183));
         titleBar.setLayout(null);
 
-        ImageIcon icon = new ImageIcon("Icons/Main_Icon.png");
+        FrameDragListener frameDragListener = new FrameDragListener(this);
+        super.addMouseListener(frameDragListener);
+        super.addMouseMotionListener(frameDragListener);
+
+        ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
         setIconImage(icon.getImage());
 
 //==========================================> J-PANEL MAIN ICON <=======================================================
 
-        ImageIcon background = new ImageIcon("Icons/Main_Icon.png");
-        Image img = background.getImage();
-        img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
+        background = new ImageIcon("Icons/Main_Logo.png");
+        img = background.getImage();
+        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
         background = new ImageIcon(img);
 
         JLabel mainIcon = new JLabel(background);
-        mainIcon.setBounds(10,10,30,30);
+        mainIcon.setBounds(05,05,40,40);
         mainIcon.setLayout(null);
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
@@ -85,18 +91,14 @@ public class LogInMenu extends JFrame {
         titleLabel = new JLabel("Log In Menu");
         titleLabel.setBounds(50, 13, 350, 30);
         titleLabel.setForeground(new Color(46, 46, 49));
-
-        font = new Font("Calibri", Font.BOLD, 20);
-        titleLabel.setFont(font);
+        titleLabel.setFont(new Font("Calibri", Font.BOLD, 20));
 
 //==========================================> CLOSE LABEL <=============================================================
-
-        font = new Font("Arial", Font.BOLD, 22);
 
         closeLabel = new JLabel("X");
         closeLabel.setBounds(475, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
-        closeLabel.setFont(font);
+        closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
 
         closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.setToolTipText("Close");
@@ -109,12 +111,10 @@ public class LogInMenu extends JFrame {
 
 //==========================================> MINUS LABEL <=============================================================
 
-        font = new Font("Arial", Font.BOLD, 44);
-
         minusLabel = new JLabel("-");
         minusLabel.setBounds(450, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
-        minusLabel.setFont(font);
+        minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
 
         minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
@@ -127,12 +127,10 @@ public class LogInMenu extends JFrame {
 
 //==========================================> MAIN LABEL <==============================================================
 
-        font = new Font("Arial", Font.BOLD, 32);
-
         mainLabel = new JLabel("Log In");
         mainLabel.setBounds(200, 35, 300, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
-        mainLabel.setFont(font);
+        mainLabel.setFont(new Font("Arial", Font.BOLD, 32));
 
 //==========================================> USERNAME LABEL <==========================================================
 
@@ -142,6 +140,13 @@ public class LogInMenu extends JFrame {
         usernameLabel.setBounds(75, 110, 100, 20);
         usernameLabel.setForeground(new Color(243, 241, 239));
         usernameLabel.setFont(font);
+
+//==========================================> PASSWORD LABEL <==========================================================
+
+        passwordLabel = new JLabel("Password ");
+        passwordLabel.setBounds(75, 150, 100, 20);
+        passwordLabel.setForeground(new Color(243, 241, 239));
+        passwordLabel.setFont(font);
 
 //==========================================> USERNAME TEXT FIELD <=====================================================
 
@@ -171,18 +176,7 @@ public class LogInMenu extends JFrame {
             public void keyReleased(KeyEvent e) { }
         });
 
-//==========================================> PASSWORD LABEL <==========================================================
-
-        font = new Font("Arial", Font.BOLD, 18);
-
-        passwordLabel = new JLabel("Password ");
-        passwordLabel.setBounds(75, 150, 100, 20);
-        passwordLabel.setForeground(new Color(243, 241, 239));
-        passwordLabel.setFont(font);
-
 //==========================================> PASSWORD TEXT FIELD <=====================================================
-
-        font = new Font("Arial", Font.PLAIN, 16);
 
         passwordField = new JPasswordField();
         passwordField.setBounds(175, 150, 250, 20);
@@ -212,12 +206,11 @@ public class LogInMenu extends JFrame {
 
 //==========================================> INFO LABEL <==============================================================
 
+        font = new Font("Arial", Font.BOLD, 14);
         infoLabel = new JLabel("Learn More!");
         infoLabel.setBounds(400, 10, 100, 20);
         infoLabel.setForeground(new Color(34, 167, 240));
         infoLabel.setToolTipText("Press this Text to Read the Information");
-
-        font = new Font("Arial", Font.BOLD, 14);
         infoLabel.setFont(font);
 
         attributes = font.getAttributes();
@@ -232,7 +225,6 @@ public class LogInMenu extends JFrame {
             public void mouseClicked(MouseEvent e) {
 
                 JTextArea textArea = new JTextArea(15, 50);
-                font = new Font("Arial", Font.BOLD, 18);
                 textArea.setLineWrap(true);
                 textArea.setText("Hello \n" +
                         "Hello \n" +
@@ -275,14 +267,14 @@ public class LogInMenu extends JFrame {
 
 //==========================================> RETURN BUTTON <===========================================================
 
-        font = new Font("Arial", Font.BOLD, 14);
+        font = new Font("Arial", Font.BOLD, 16);
 
-        btn_Return = new JButton("Go Back");
-        btn_Return.setBounds(10, 10, 80, 16);
-        btn_Return.setBackground(new Color(108, 122, 137));
+        btn_Return = new JButton("Return");
+        btn_Return.setBounds(100, 235, 120, 30);
+        btn_Return.setBackground(new Color(242, 38, 19));
         btn_Return.setForeground(new Color(243, 241, 239));
         btn_Return.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Return.setToolTipText("Goes Back To Main Menu");
+        btn_Return.setToolTipText("Press this button to Go Back");
         btn_Return.setFont(font);
 
         btn_Return.addActionListener(new ActionListener() {
@@ -313,49 +305,7 @@ public class LogInMenu extends JFrame {
             public void keyReleased(KeyEvent e) { }
         });
 
-//==========================================> CANCEL BUTTON <===========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
-
-        btn_Cancel = new JButton("Cancel");
-        btn_Cancel.setBounds(100, 235, 120, 30);
-        btn_Cancel.setBackground(new Color(242, 38, 19));
-        btn_Cancel.setForeground(new Color(243, 241, 239));
-        btn_Cancel.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Cancel.setToolTipText("This Button will cancel the process");
-        btn_Cancel.setFont(font);
-
-        btn_Cancel.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new LogInMenu();
-            }
-        });
-
-        btn_Cancel.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    dispose();
-                    new LogInMenu();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
-
 //==========================================> LOG IN BUTTON <===========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
 
         btn_LogInn = new JButton("Log In");
         btn_LogInn.setBounds(275, 235, 120, 30);
@@ -408,7 +358,6 @@ public class LogInMenu extends JFrame {
         mainBody.add(passwordField);
         mainBody.add(forgottenPassword);
         mainBody.add(btn_Return);
-        mainBody.add(btn_Cancel);
         mainBody.add(btn_LogInn);
 
         add(titleBar);
@@ -446,10 +395,11 @@ public class LogInMenu extends JFrame {
 
 //==========================================> LOG IN CONDITION <========================================================
 
+    // You will check for the Correct Username and Password here.
     public void logInCondition() {
-        if (usernameField.getText().equals(tempUsername) && passwordField.getText().equals(tempPassword)) {
-            flag = false;
-            JOptionPane.showMessageDialog(LogInMenu.super.rootPane, "Successfully Logged In");
+        if (usernameField.getText().trim().equals(tempUsername) && passwordField.getText().trim().equals(tempPassword)) {
+            dispose();
+            new EmailMenu();
         } else {
             if (!flag) {
                 flag = true;
