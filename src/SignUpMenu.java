@@ -692,7 +692,6 @@ public class SignUpMenu extends JFrame {
             userData[2] = "female";
         }
         userData[3] = String.valueOf(date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900));
-        System.out.println(userData[3]);
         userData[4] = phoneNoField.getText().toLowerCase().trim();
         userData[5] = addressTextArea.getText().toLowerCase().trim();
         userData[6] = usernameField.getText().toLowerCase().trim();
