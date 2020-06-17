@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.TextAttribute;
 import java.awt.geom.RoundRectangle2D;
+import java.sql.SQLException;
 import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
@@ -12,9 +13,6 @@ import java.util.Map;
 public class LogInMenu extends JFrame {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
-
-    private String tempUsername = "Mehroz"; // Temp variable - Delete them after adding back end.
-    private String tempPassword = "123";    // Temp variable - Delete them after adding back end.
 
     private JPanel titleBar = new JPanel();
     private JPanel mainBody = new JPanel();
@@ -196,7 +194,11 @@ public class LogInMenu extends JFrame {
                         dispose();
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logInCondition();
+                    try {
+                        logInCondition();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
 
@@ -318,7 +320,11 @@ public class LogInMenu extends JFrame {
         btn_LogInn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                logInCondition();
+                try {
+                    logInCondition();
+                } catch (SQLException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
 
@@ -333,7 +339,11 @@ public class LogInMenu extends JFrame {
                         dispose();
                     }
                 } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    logInCondition();
+                    try {
+                        logInCondition();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                    }
                 }
             }
 
@@ -396,10 +406,11 @@ public class LogInMenu extends JFrame {
 //==========================================> LOG IN CONDITION <========================================================
 
     // You will check for the Correct Username and Password here.
-    public void logInCondition() {
-        if (usernameField.getText().trim().equals(tempUsername) && passwordField.getText().trim().equals(tempPassword)) {
+    public void logInCondition() throws SQLException {
+        if (Driver.mail.getId(usernameField.getText().trim(),passwordField.getText().trim())!=-1){
+            Driver.mail.loadUserdata(Driver.mail.getId(usernameField.getText().trim()));
             dispose();
-            new EmailMenu();
+            //EmailMenu to be added here   --Shaheryar
         } else {
             if (!flag) {
                 flag = true;

@@ -86,7 +86,6 @@ public class SignUpMenu extends JFrame {
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
     public SignUpMenu() {
-
 //==========================================> MAIN J-FRAME <============================================================
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -662,7 +661,7 @@ public class SignUpMenu extends JFrame {
         }
         else {
             JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Your Account has been Successfully made!", "Success!", JOptionPane.PLAIN_MESSAGE);
-            setUserData();
+            uploadBioToDatabase();
             dispose();
             new MainMenu();
         }
@@ -692,12 +691,20 @@ public class SignUpMenu extends JFrame {
             userData[2] = "female";
         }
         userData[3] = String.valueOf(date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900));
+        System.out.println(userData[3]);
         userData[4] = phoneNoField.getText().toLowerCase().trim();
         userData[5] = addressTextArea.getText().toLowerCase().trim();
         userData[6] = usernameField.getText().toLowerCase().trim();
         userData[7] = passwordField.getText().trim();
         userData[8] = retypePassField.getText().trim();
     }
+
+    public void uploadBioToDatabase() {
+        setUserData();
+        userData = getUserData();
+        Driver.dataAgent.addUser(userData[6],userData[7],userData[0],userData[1],userData[2],userData[5],null,null,userData[4],userData[3]);
+    }
+
 
     public String[] getUserData() {
         return this.userData;
