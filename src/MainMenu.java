@@ -139,11 +139,7 @@ public class MainMenu extends JFrame {
 
                 JTextArea textArea = new JTextArea(15, 50);
                 textArea.setLineWrap(true);
-                textArea.setText("Hello \n" +
-                                 "Hello \n" +
-                                 "Hello \n" +
-                                 "Hello \n" +
-                                 "Hello");
+                textArea.setText("Hello \n" + "Hello \n" + "Hello \n" + "Hello \n" + "Hello");
                 textArea.setEditable(false);
 
                 JScrollPane scrollPane = new JScrollPane(textArea);
@@ -160,7 +156,7 @@ public class MainMenu extends JFrame {
         btn_SignUp.setBackground(new Color(242, 38, 19));
         btn_SignUp.setForeground(new Color(243, 241, 239));
         btn_SignUp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_SignUp.setToolTipText("This Button is Used to Sign up to our E.M.S");
+        btn_SignUp.setToolTipText("Allows you yo create a new Account");
         btn_SignUp.setFont(font);
 
         btn_SignUp.addActionListener(new ActionListener() {
@@ -170,7 +166,6 @@ public class MainMenu extends JFrame {
                 new SignUpMenu();
             }
         });
-
         btn_SignUp.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -199,7 +194,7 @@ public class MainMenu extends JFrame {
         btn_LogInn.setBackground(new Color(34, 167, 240));
         btn_LogInn.setForeground(new Color(243, 241, 239));
         btn_LogInn.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_LogInn.setToolTipText("This Button is Used to Log In to our E.M.S");
+        btn_LogInn.setToolTipText("Allows you to log into your Account");
         btn_LogInn.setFont(font);
 
         btn_LogInn.addActionListener(new ActionListener() {
@@ -209,7 +204,6 @@ public class MainMenu extends JFrame {
                 new LogInMenu();
             }
         });
-
         btn_LogInn.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
