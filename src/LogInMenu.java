@@ -10,6 +10,7 @@ import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
 
+/** GOTO SECURITY QUESTION CHECK AND CALL THE RESPECTIVE FUNCTIONS*/
 public class LogInMenu extends JFrame {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
@@ -42,6 +43,7 @@ public class LogInMenu extends JFrame {
 
     private ImageIcon background;
     private Image img;
+
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
     public LogInMenu() {
@@ -269,8 +271,6 @@ public class LogInMenu extends JFrame {
 
 //==========================================> RETURN BUTTON <===========================================================
 
-        font = new Font("Arial", Font.BOLD, 16);
-
         btn_Return = new JButton("Return");
         btn_Return.setBounds(100, 235, 120, 30);
         btn_Return.setBackground(new Color(242, 38, 19));
@@ -286,7 +286,6 @@ public class LogInMenu extends JFrame {
                 new MainMenu();
             }
         });
-
         btn_Return.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -327,7 +326,6 @@ public class LogInMenu extends JFrame {
                 }
             }
         });
-
         btn_LogInn.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -370,6 +368,7 @@ public class LogInMenu extends JFrame {
         mainBody.add(btn_Return);
         mainBody.add(btn_LogInn);
 
+        forgottenPass();
         add(titleBar);
         add(mainBody);
 
@@ -398,7 +397,12 @@ public class LogInMenu extends JFrame {
         forgottenPassword.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-
+                if (true) {
+                    dispose();
+                    new ForgottenPass();
+                } else {
+                    JOptionPane.showMessageDialog(LogInMenu.super.rootPane, "", "Invalid Answer", JOptionPane.ERROR_MESSAGE);
+                }
             }
         });
     }
@@ -412,11 +416,6 @@ public class LogInMenu extends JFrame {
             dispose();
             //EmailMenu to be added here   --Shaheryar
         } else {
-            if (!flag) {
-                flag = true;
-            } else {
-                forgottenPass();
-            }
             JOptionPane.showMessageDialog(LogInMenu.super.rootPane, "Error! Either Username or Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
         }
     }
