@@ -15,14 +15,14 @@ public class DatabaseManager {
             Statement statement = connection.createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS user (id int primary key unique auto_increment,username varchar(55)" +
                     ",password varchar(55),dateTime timestamp,firstName varchar(55),lastName varchar(55),gender int,address varchar(55)" +
-                    ",securityQuestion varchar(70),securityQuestionAnswer varchar(55))");
+                    ",securityQuestion varchar(70),securityQuestionAnswer varchar(55),birth_date varchar(55),phoneNumber varchar(55))");
             statement.execute("CREATE TABLE IF NOT EXISTS mail (id int primary key unique auto_increment,recipient_id int,subject varchar(100)" +
                     ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean)");
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    public void addUser(String username,String password,String firstName,String lastName,String gender,String address,String securityQuestion,String securityQuestionAnswer) {
-        String query = "INSERT INTO user(username,password,firstName,lastName,gender,address,securityQuestion,securityQuestionAnswer)VALUES(?,?,?,?,?,?,?,?)";
+    public void addUser(String username,String password,String firstName,String lastName,String gender,String address,String securityQuestion,String securityQuestionAnswer,String phoneNumber,String birth_date) {
+        String query = "INSERT INTO user(username,password,firstName,lastName,gender,address,securityQuestion,securityQuestionAnswer,phoneNumber,birth_date)VALUES(?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ppStatement = connection.prepareStatement(query);
             ppStatement.setString(1,username);
@@ -51,12 +51,14 @@ public class DatabaseManager {
             ppStatement.setString(6,address);
             ppStatement.setString(7,securityQuestion);
             ppStatement.setString(8,securityQuestionAnswer);
+            ppStatement.setString(9,phoneNumber);
+            ppStatement.setString(10,birth_date);
             ppStatement.execute();
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
     public void addMail(MailBody mail) {
-        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred)VALUES(?,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred)VALUES(?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ppStatement = connection.prepareStatement(query);
             StringTokenizer recipients = new StringTokenizer(mail.getRecipient(),",");
@@ -129,17 +131,15 @@ public class DatabaseManager {
         return -1;
     }
 
-    public int checkUserRepetition(String username) {
+    public boolean checkUserRepetition(String username) {
         String query = "SELECT * FROM user where username = ?";
         try {
             PreparedStatement ppStatement = connection.prepareStatement(query);
             ppStatement.setString(1,username);
-
             ResultSet rs = ppStatement.executeQuery();
-            if (rs.last()) { return rs.getRow(); }
-            else { return -1; }
+            return rs.next();
         } catch (SQLException e) { e.printStackTrace(); }
-        return -1;
+        return false;
     }
 
     public String getUserSecurityQuestion(int id) {
@@ -218,8 +218,8 @@ public class DatabaseManager {
 
     public ArrayList<MailBody> loadUserMailsFromDataBase(int id) throws SQLException {
         ArrayList<MailBody> mails = new ArrayList<>();
-        //--------------------------------------mails-MAIL is laoded---------------------------------------------------
-        PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where recipient_id=?");
+        //--------------------------------------mails-MAIL is loaded---------------------------------------------------
+        PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where recipient_id = ?");
         ppStatement.setInt(1, id);
         ResultSet rs = ppStatement.executeQuery();
         while (rs.next()) {
@@ -261,11 +261,11 @@ public class DatabaseManager {
     public ArrayList<MailBody> loadUserSentMailsFromDataBase(int id) throws SQLException {
         ArrayList<MailBody> mails = new ArrayList<>();
         //-----------------------------------------sent-MAIL is loaded------------------------------------
-        PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where sender_id=?");
+        PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where sender_id = ?");
         ppStatement.setInt(1, id);
         ResultSet rs = ppStatement.executeQuery();
-        MailBody sentMail = new MailBody();
-        while (rs.next()) {
+        while(rs.next()){
+            MailBody sentMail = new MailBody();
             sentMail.setId(id);
             sentMail.setRecipient(getUsername(rs.getInt(5)));
             sentMail.setSubject(rs.getString(3));
@@ -295,6 +295,7 @@ public class DatabaseManager {
             sentMail.setChild_mail(rs.getInt(9));
             sentMail.setPermaTrash(rs.getInt(10));
             sentMail.setSender_starred(rs.getBoolean(11));
+            mails.add(sentMail);
         }
         return mails;
     }
@@ -374,5 +375,13 @@ public class DatabaseManager {
             ppsStatement.executeQuery();
         }
     }
+
+    public void changeUserPassword(String username,String password) throws SQLException {
+        PreparedStatement ppsStatement = connection.prepareStatement("UPDATE user SET password = ? WHERE username = ?");
+        ppsStatement.setString(1,password);
+        ppsStatement.setString(2,username);
+        ppsStatement.executeUpdate();
+    }
+
 
 }

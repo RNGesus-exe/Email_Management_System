@@ -382,7 +382,7 @@ public class LogInMenu extends JFrame {
 
     public void forgottenPass() {
 
-        forgottenPassword.setBounds(275, 180, 150, 20);
+        forgottenPassword.setBounds(275, 180, 180, 20);
         forgottenPassword.setForeground(new Color(34, 167, 240));
         forgottenPassword.setToolTipText("Press this Text to Read the Information");
 
@@ -411,10 +411,11 @@ public class LogInMenu extends JFrame {
 
     // You will check for the Correct Username and Password here.
     public void logInCondition() throws SQLException {
-        if (Driver.mail.getId(usernameField.getText().trim(),passwordField.getText().trim())!=-1){
+        if (Driver.dataAgent.getId(usernameField.getText().trim(),passwordField.getText().trim())!=-1){
             Driver.mail.loadUserdata(Driver.mail.getId(usernameField.getText().trim()));
             dispose();
-            //EmailMenu to be added here   --Shaheryar
+            Driver.mail.loadUserdata(Driver.dataAgent.getId(usernameField.getText().trim()));
+            new EmailMenu();
         } else {
             JOptionPane.showMessageDialog(LogInMenu.super.rootPane, "Error! Either Username or Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
         }
