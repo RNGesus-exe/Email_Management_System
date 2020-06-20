@@ -26,7 +26,6 @@ public class SignUpMenu extends JFrame {
     private JLabel titleLabel;
     private JLabel closeLabel;
     private JLabel minusLabel;
-
     private JLabel mainLabel;
     private JLabel infoLabel;
 
@@ -39,6 +38,7 @@ public class SignUpMenu extends JFrame {
     private ButtonGroup genderGroup = new ButtonGroup();
     private JRadioButton btn_MaleOption;
     private JRadioButton btn_GirlOption;
+    private JRadioButton btn_OthrOption;
 
     private JLabel dobLabel;
     private JDatePanelImpl datePanel;
@@ -50,13 +50,23 @@ public class SignUpMenu extends JFrame {
     private JTextField phoneNoField;
     private JTextArea addressTextArea;
 
+    private JLabel securityQsLabel;
+    private JLabel securityAsLabel;
+    private JComboBox securityQsBox;
+    private JTextField securityAnsField;
+
+    private String [] securityQuestions = { "What is your favourite book?",
+            "Who is your best friend?",
+            "What is your pet's name?",
+            "What is your hobby?"};
+
     private JLabel usernameLabel;
     private JLabel passwordLabel;
     private JLabel retypePassLabel;
 
     private JTextField     usernameField;
     private JPasswordField passwordField;
-    private JPasswordField retypePassField;
+    private JPasswordField confirmPassField;
 
     private JLabel returnIcon;
     private JButton btn_Resets;
@@ -81,22 +91,25 @@ public class SignUpMenu extends JFrame {
      *      6: Username
      *      7: Password
      *      8: Confirm Password
+     *      9: Security Question
+     *      10: Security Answer
      **/
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
     public SignUpMenu() {
+
 //==========================================> MAIN J-FRAME <============================================================
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
-        setBounds(350, 100, 700, 650);
+        setBounds(250, 75, 900, 700);
         this.setUndecorated(true);
-        setShape(new RoundRectangle2D.Double(0, 0, 700, 650, 30, 30));
+        setShape(new RoundRectangle2D.Double(0, 0, 900, 700, 30, 30));
         setLayout(null);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
-        titleBar.setBounds(0, 0, 700, 50);
+        titleBar.setBounds(0, 0, 900, 50);
         titleBar.setBackground(new Color(171, 183, 183));
         titleBar.setLayout(null);
 
@@ -120,7 +133,7 @@ public class SignUpMenu extends JFrame {
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
 
-        mainBody.setBounds(0, 50, 700, 600);
+        mainBody.setBounds(0, 50, 900, 650);
         mainBody.setBackground(new Color(52, 73, 94));
         mainBody.setLayout(null);
 
@@ -134,7 +147,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> CLOSE LABEL <=============================================================
 
         closeLabel = new JLabel("X");
-        closeLabel.setBounds(675, 15, 25, 22);
+        closeLabel.setBounds(875, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
         closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
 
@@ -150,7 +163,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> MINUS LABEL <=============================================================
 
         minusLabel = new JLabel("-");
-        minusLabel.setBounds(650, 0, 25, 44);
+        minusLabel.setBounds(850, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
         minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
 
@@ -163,10 +176,41 @@ public class SignUpMenu extends JFrame {
             }
         });
 
+//==========================================> INFO LABEL <==============================================================
+
+        infoLabel = new JLabel("Learn More!");
+        infoLabel.setBounds(800, 10, 100, 20);
+        infoLabel.setForeground(new Color(34, 167, 240));
+        infoLabel.setToolTipText("Press this Text to Read the Information");
+
+        font = new Font("Arial", Font.BOLD, 14);
+        infoLabel.setFont(font);
+
+        attributes = font.getAttributes();
+        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
+        infoLabel.setFont(font.deriveFont(attributes));
+
+//==========================================> ABOUT SECTION <===========================================================
+
+        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        infoLabel.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+
+                JTextArea textArea = new JTextArea(15, 50);
+                textArea.setLineWrap(true);
+                textArea.setText("Hello \n" + "Hello \n" + "Hello \n" + "Hello \n" + "Hello");
+                textArea.setEditable(false);
+
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, scrollPane, "About Us", JOptionPane.PLAIN_MESSAGE, null);
+            }
+        });
+
 //==========================================> MAIN LABEL <==============================================================
 
-        mainLabel = new JLabel("Register");
-        mainLabel.setBounds(300, 35, 300, 50);
+        mainLabel = new JLabel("Sign Up Menu");
+        mainLabel.setBounds(350, 35, 300, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
         mainLabel.setFont(new Font("Arial", Font.BOLD, 32));
 
@@ -175,14 +219,14 @@ public class SignUpMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 18);
 
         firstnameLabel = new JLabel("First Name ");
-        firstnameLabel.setBounds(50, 110, 100, 20);
+        firstnameLabel.setBounds(50, 100, 100, 20);
         firstnameLabel.setForeground(new Color(243, 241, 239));
         firstnameLabel.setFont(font);
 
 //==========================================> LAST NAME LABEL <=========================================================
 
         lastnameLabel = new JLabel("Last Name ");
-        lastnameLabel.setBounds(350, 110, 100, 20);
+        lastnameLabel.setBounds(475, 100, 100, 20);
         lastnameLabel.setForeground(new Color(243, 241, 239));
         lastnameLabel.setFont(font);
 
@@ -191,7 +235,7 @@ public class SignUpMenu extends JFrame {
         font = new Font("Arial", Font.PLAIN, 16);
 
         firstnameField = new JTextField();
-        firstnameField.setBounds(150, 110, 180, 20);
+        firstnameField.setBounds(175, 100, 250, 20);
         firstnameField.setBackground(new Color(46, 49, 49));
         firstnameField.setForeground(new Color(243, 241, 239));
         firstnameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -217,7 +261,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> LAST NAME TEXT FIELD <====================================================
 
         lastnameField = new JTextField();
-        lastnameField.setBounds(450, 110, 180, 20);
+        lastnameField.setBounds(600, 100, 250, 20);
         lastnameField.setBackground(new Color(46, 49, 49));
         lastnameField.setForeground(new Color(243, 241, 239));
         lastnameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -242,8 +286,8 @@ public class SignUpMenu extends JFrame {
 
 //==========================================> GENDER LABEL <============================================================
 
-        genderLabel = new JLabel("Gender           | ");
-        genderLabel.setBounds(50, 150, 150, 20);
+        genderLabel = new JLabel("Gender");
+        genderLabel.setBounds(50, 150, 80, 20);
         genderLabel.setForeground(new Color(243, 241, 239));
         genderLabel.setFont(new Font("Arial", Font.BOLD, 18));
 
@@ -252,7 +296,7 @@ public class SignUpMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 16);
 
         btn_MaleOption = new JRadioButton("Male");
-        btn_MaleOption.setBounds(200, 150, 100, 30);
+        btn_MaleOption.setBounds(180, 150, 60, 30);
         btn_MaleOption.setBackground(new Color(52, 73, 94));
         btn_MaleOption.setForeground(new Color(243, 241, 239));
         btn_MaleOption.setFont(font);
@@ -267,7 +311,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> FEMALE RADIO BUTTON <=====================================================
 
         btn_GirlOption = new JRadioButton("Female");
-        btn_GirlOption.setBounds(300, 150, 100, 30);
+        btn_GirlOption.setBounds(260, 150, 80, 30);
         btn_GirlOption.setBackground(new Color(52, 73, 94));
         btn_GirlOption.setForeground(new Color(243, 241, 239));
         btn_GirlOption.setFont(font);
@@ -279,12 +323,27 @@ public class SignUpMenu extends JFrame {
             }
         });
 
+//==========================================> OTHERS RADIO BUTTON <=====================================================
+
+        btn_OthrOption = new JRadioButton("Other");
+        btn_OthrOption.setBounds(350, 150, 80, 30);
+        btn_OthrOption.setBackground(new Color(52, 73, 94));
+        btn_OthrOption.setForeground(new Color(243, 241, 239));
+        btn_OthrOption.setFont(font);
+
+        btn_OthrOption.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                btn_GirlOption.setEnabled(true);
+            }
+        });
+
 //==========================================> DATE OF BIRTH LABEL <=====================================================
 
         font = new Font("Arial", Font.BOLD, 18);
 
-        dobLabel = new JLabel("Date of Birth | ");
-        dobLabel.setBounds(50, 200, 150, 20);
+        dobLabel = new JLabel("Date of Birth");
+        dobLabel.setBounds(475, 150, 120, 20);
         dobLabel.setForeground(new Color(243, 241, 239));
         dobLabel.setFont(font);
 
@@ -299,19 +358,19 @@ public class SignUpMenu extends JFrame {
         datePanel = new JDatePanelImpl(model, p);
         datePicker = new JDatePickerImpl(datePanel, new DateLabelFormatter());
         dateSet = new JDateChooser();
-        dateSet.setBounds(200, 200, 200, 26);
+        dateSet.setBounds(600, 150, 250, 26);
 
 //==========================================> PHONE NO. LABEL <=========================================================
 
-        phoneNoLabel = new JLabel("Phone no.      | ");
-        phoneNoLabel.setBounds(50, 250, 150, 20);
+        phoneNoLabel = new JLabel("Phone no.");
+        phoneNoLabel.setBounds(50, 200, 200, 20);
         phoneNoLabel.setForeground(new Color(243, 241, 239));
         phoneNoLabel.setFont(font);
 
 //==========================================> PHONE NO. TEXT FIELD <====================================================
 
         phoneNoField = new JTextField();
-        phoneNoField.setBounds(200, 250, 250, 20);
+        phoneNoField.setBounds(175, 200, 250, 20);
         phoneNoField.setBackground(new Color(46, 49, 49));
         phoneNoField.setForeground(new Color(243, 241, 239));
         phoneNoField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -338,41 +397,93 @@ public class SignUpMenu extends JFrame {
 
         font = new Font("Arial", Font.BOLD, 18);
 
-        addressLabel = new JLabel("Address         | ");
-        addressLabel.setBounds(50, 300, 150, 20);
+        addressLabel = new JLabel("Address");
+        addressLabel.setBounds(50, 250, 100, 20);
         addressLabel.setForeground(new Color(243, 241, 239));
         addressLabel.setFont(font);
 
 //==========================================> ADDRESS TEXT AREA <=======================================================
 
         addressTextArea = new JTextArea();
-        addressTextArea.setBounds(200, 300, 450, 70);
+        addressTextArea.setBounds(175, 250, 675, 50);
         addressTextArea.setBackground(new Color(46, 49, 49));
         addressTextArea.setForeground(new Color(243, 241, 239));
         addressTextArea.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         addressTextArea.setCaretColor(Color.white);
-        addressTextArea.setDocument(new JTextFieldLimit(150));
+        addressTextArea.setDocument(new JTextFieldLimit(200));
         addressTextArea.setLineWrap(true);
         addressTextArea.setEditable(true);
 
+//==========================================> SECURITY QUESTION LABEL <=================================================
+
+        securityQsLabel = new JLabel("Security Question");
+        securityQsLabel.setBounds(50, 360, 200, 20);
+        securityQsLabel.setForeground(new Color(243, 241, 239));
+        securityQsLabel.setFont(font);
+
+//==========================================> SECURITY QUESTION COMBO BOX <=============================================
+
+        securityQsBox = new JComboBox(securityQuestions);
+        securityQsBox.setBounds(250, 360, 500, 30);
+        securityQsBox.setBackground(new Color(255, 255, 255));
+        securityQsBox.setForeground(new Color(0, 0, 0));
+        securityQsBox.setFont(new Font("Arial", Font.PLAIN, 16));
+
+//==========================================> SECURITY ANSWER LABEL <===================================================
+
+        securityAsLabel = new JLabel("Security Answer");
+        securityAsLabel.setBounds(50, 400, 200, 20);
+        securityAsLabel.setForeground(new Color(243, 241, 239));
+        securityAsLabel.setFont(font);
+
+//==========================================> USERNAME TEXT FIELD <=====================================================
+
+        font = new Font("Arial", Font.PLAIN, 16);
+
+        securityAnsField = new JTextField();
+        securityAnsField.setBounds(250, 400, 500, 20);
+        securityAnsField.setBackground(new Color(46, 49, 49));
+        securityAnsField.setForeground(new Color(243, 241, 239));
+        securityAnsField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        securityAnsField.setCaretColor(Color.white);
+        securityAnsField.setFont(font);
+        securityAnsField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) { }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    if (JOptionPane.showConfirmDialog(SignUpMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        dispose();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) { }
+        });
+
 //==========================================> USERNAME LABEL <==========================================================
 
+        font = new Font("Arial", Font.BOLD, 18);
+
         usernameLabel = new JLabel("Username ");
-        usernameLabel.setBounds(50, 400, 100, 20);
+        usernameLabel.setBounds(50, 460, 100, 20);
         usernameLabel.setForeground(new Color(243, 241, 239));
         usernameLabel.setFont(font);
 
 //==========================================> PASSWORD LABEL <==========================================================
 
         passwordLabel = new JLabel("Password ");
-        passwordLabel.setBounds(50, 450, 100, 20);
+        passwordLabel.setBounds(50, 500, 100, 20);
         passwordLabel.setForeground(new Color(243, 241, 239));
         passwordLabel.setFont(font);
 
 //==========================================> RETYPE PASSWORD LABEL <===================================================
 
-        retypePassLabel = new JLabel("Retype Pass ");
-        retypePassLabel.setBounds(50, 500, 120, 20);
+        retypePassLabel = new JLabel("Confirm Password");
+        retypePassLabel.setBounds(50, 540, 180, 20);
         retypePassLabel.setForeground(new Color(243, 241, 239));
         retypePassLabel.setFont(font);
 
@@ -381,7 +492,7 @@ public class SignUpMenu extends JFrame {
         font = new Font("Arial", Font.PLAIN, 16);
 
         usernameField = new JTextField();
-        usernameField.setBounds(175, 400, 250, 20);
+        usernameField.setBounds(250, 460, 300, 20);
         usernameField.setBackground(new Color(46, 49, 49));
         usernameField.setForeground(new Color(243, 241, 239));
         usernameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -407,7 +518,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> PASSWORD TEXT FIELD <=====================================================
 
         passwordField = new JPasswordField();
-        passwordField.setBounds(175, 450, 250, 20);
+        passwordField.setBounds(250, 500, 300, 20);
         passwordField.setBackground(new Color(46, 49, 49));
         passwordField.setForeground(new Color(243, 241, 239));
         passwordField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -432,14 +543,14 @@ public class SignUpMenu extends JFrame {
 
 //==========================================> RETYPE PASSWORD TEXT FIELD <==============================================
 
-        retypePassField = new JPasswordField();
-        retypePassField.setBounds(175, 500, 250, 20);
-        retypePassField.setBackground(new Color(46, 49, 49));
-        retypePassField.setForeground(new Color(243, 241, 239));
-        retypePassField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        retypePassField.setCaretColor(Color.white);
-        retypePassField.setFont(font);
-        retypePassField.addKeyListener(new KeyListener() {
+        confirmPassField = new JPasswordField();
+        confirmPassField.setBounds(250, 540, 300, 20);
+        confirmPassField.setBackground(new Color(46, 49, 49));
+        confirmPassField.setForeground(new Color(243, 241, 239));
+        confirmPassField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        confirmPassField.setCaretColor(Color.white);
+        confirmPassField.setFont(font);
+        confirmPassField.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
 
@@ -454,41 +565,6 @@ public class SignUpMenu extends JFrame {
 
             @Override
             public void keyReleased(KeyEvent e) { }
-        });
-
-//==========================================> INFO LABEL <==============================================================
-
-        infoLabel = new JLabel("Learn More!");
-        infoLabel.setBounds(600, 10, 100, 20);
-        infoLabel.setForeground(new Color(34, 167, 240));
-        infoLabel.setToolTipText("Press this Text to Read the Information");
-
-        font = new Font("Arial", Font.BOLD, 14);
-        infoLabel.setFont(font);
-
-        attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        infoLabel.setFont(font.deriveFont(attributes));
-
-//==========================================> ABOUT SECTION <===========================================================
-
-        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        infoLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                JTextArea textArea = new JTextArea(15, 50);
-                textArea.setLineWrap(true);
-                textArea.setText("Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello");
-                textArea.setEditable(false);
-
-                JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, scrollPane, "About Us", JOptionPane.PLAIN_MESSAGE, null);
-            }
         });
 
 //==========================================> RETURN BUTTON <===========================================================
@@ -515,11 +591,11 @@ public class SignUpMenu extends JFrame {
         font = new Font("Arial", Font.BOLD, 16);
 
         btn_Resets = new JButton("Reset");
-        btn_Resets.setBounds(200, 550, 120, 30);
+        btn_Resets.setBounds(275, 600, 120, 30);
         btn_Resets.setBackground(new Color(242, 38, 19));
         btn_Resets.setForeground(new Color(243, 241, 239));
         btn_Resets.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Resets.setToolTipText("This Button will cancel the process");
+        btn_Resets.setToolTipText("Empties all the Options");
         btn_Resets.setFont(font);
 
         btn_Resets.addActionListener(new ActionListener() {
@@ -529,7 +605,6 @@ public class SignUpMenu extends JFrame {
                 new SignUpMenu();
             }
         });
-
         btn_Resets.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -553,7 +628,7 @@ public class SignUpMenu extends JFrame {
 //==========================================> SIGN UP BUTTON <==========================================================
 
         btn_SignUp = new JButton("Sign Up");
-        btn_SignUp.setBounds(375, 550, 120, 30);
+        btn_SignUp.setBounds(450, 600, 120, 30);
         btn_SignUp.setBackground(new Color(34, 167, 240));
         btn_SignUp.setForeground(new Color(243, 241, 239));
         btn_SignUp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -566,7 +641,6 @@ public class SignUpMenu extends JFrame {
                 signUpValidations();
             }
         });
-
         btn_SignUp.addKeyListener(new KeyListener() {
             @Override
             public void keyTyped(KeyEvent e) { }
@@ -603,8 +677,10 @@ public class SignUpMenu extends JFrame {
         mainBody.add(genderLabel);
         genderGroup.add(btn_MaleOption);
         genderGroup.add(btn_GirlOption);
+        genderGroup.add(btn_OthrOption);
         mainBody.add(btn_MaleOption);
         mainBody.add(btn_GirlOption);
+        mainBody.add(btn_OthrOption);
 
         mainBody.add(dobLabel);
         mainBody.add(datePicker);
@@ -615,12 +691,17 @@ public class SignUpMenu extends JFrame {
         mainBody.add(addressLabel);
         mainBody.add(addressTextArea);
 
+        mainBody.add(securityQsLabel);
+        mainBody.add(securityQsBox);
+        mainBody.add(securityAsLabel);
+        mainBody.add(securityAnsField);
+
         mainBody.add(usernameLabel);
         mainBody.add(usernameField);
         mainBody.add(passwordLabel);
         mainBody.add(passwordField);
         mainBody.add(retypePassLabel);
-        mainBody.add(retypePassField);
+        mainBody.add(confirmPassField);
 
         mainBody.add(returnIcon);
         mainBody.add(btn_Resets);
@@ -636,28 +717,35 @@ public class SignUpMenu extends JFrame {
     }
 
 //==========================================> SIGN UP VALIDATIONS FUNCTION <============================================
-    // It was not getting the date values for me so one condition is not working properly.
+
     public void signUpValidations() {
-        if ((firstnameField.getText().equals("") && lastnameField.getText().equals("")) || isContainsSpecialChar(firstnameField.getText().trim()) || isContainsSpecialChar(lastnameField.getText().trim())) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Name First!", "Incorrect Name!", JOptionPane.ERROR_MESSAGE);
+        if ((firstnameField.getText().trim().equals("") && lastnameField.getText().trim().equals("")) || isContainsSpecialChar(firstnameField.getText().trim()) || isContainsSpecialChar(lastnameField.getText().trim())) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Name First!", "Invalid Name!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (btn_MaleOption.isSelected() == false && btn_GirlOption.isSelected() == false) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Select a Gender First!", "Incorrect Gender!", JOptionPane.ERROR_MESSAGE);
+        else if (btn_MaleOption.isSelected() == false && btn_GirlOption.isSelected() == false && btn_OthrOption.isSelected() == false) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Select a Gender First!", "Invalid Gender!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (phoneNoField.getText().equals("") || isPhoneNoValid()) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Phone Number!", "Incorrect Phone no.!", JOptionPane.ERROR_MESSAGE);
+        else if (phoneNoField.getText().trim().equals("") || isPhoneNoValid()) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Phone Number!", "Invalid Phone no.!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (addressTextArea.getText().equals("")) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Address First!", "Incorrect Address!", JOptionPane.ERROR_MESSAGE);
+        else if (addressTextArea.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter your Address First!", "Invalid Address!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (usernameField.getText().equals("") || isContainsSpecialChar(usernameField.getText().trim())) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter Your Username First!", "Incorrect Username!", JOptionPane.ERROR_MESSAGE);
+        else if (securityAnsField.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter an answer for your Security Question!", "Invalid Address!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (passwordField.getText().equals("") || !(retypePassField.getText().equals(passwordField.getText()))) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Confirm Password should match your password!", "Incorrect Password!", JOptionPane.ERROR_MESSAGE);
+        else if (usernameField.getText().trim().equals("") || isContainsSpecialChar(usernameField.getText().trim())) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Enter Your Username First!", "Invalid Username!", JOptionPane.ERROR_MESSAGE);
         }
-        else if (datePicker.isShowing() == false) {
-            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! No Date Selected!", "Incorrect Date of Birth!", JOptionPane.ERROR_MESSAGE);
+        else if (passwordField.getText().trim().equals("") || !(confirmPassField.getText().equals(passwordField.getText()))) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! Confirm Password should match your password!", "Invalid Password!", JOptionPane.ERROR_MESSAGE);
+        }
+        else if (!datePicker.isShowing()) {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Error! No Date Selected!", "Invalid Date of Birth!", JOptionPane.ERROR_MESSAGE);
+        }
+        else if(Driver.dataAgent.checkUserRepetition(usernameField.getText().trim()))
+        {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "The entered username is already taken!", "Username Already Exists", JOptionPane.ERROR_MESSAGE);
         }
         else {
             JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Your Account has been Successfully made!", "Success!", JOptionPane.PLAIN_MESSAGE);
@@ -669,42 +757,48 @@ public class SignUpMenu extends JFrame {
 
 //==========================================> USER DATA FUNCTIONS <=====================================================
 
-    /**Order Of Input:
-     *  0: First Name
-     *  1: Last  Name
-     *  2: Gender
-     *  3: Date of Birth
-     *  4: Phone no.
-     *  5: Address
-     *  6: Username
-     *  7: Password
-     *  8: Confirm Password
-    **/
-
     public void setUserData() {
-        userData = new String[9];
+        userData = new String[11];
         userData[0] = firstnameField.getText().toLowerCase().trim();
         userData[1] = lastnameField.getText().toLowerCase().trim();
+
         if (btn_MaleOption.isEnabled()) {
             userData[2] = "male";
-        } else {
+        } else if (btn_GirlOption.isEnabled()) {
             userData[2] = "female";
+        } else {
+            userData[2] = "other";
         }
-        userData[3] = String.valueOf(date.getDate() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900));
-        System.out.println(userData[3]);
+
+        userData[3] = String.valueOf(date.getDay() + "/" + (date.getMonth() + 1) + "/" + (date.getYear() + 1900));
         userData[4] = phoneNoField.getText().toLowerCase().trim();
         userData[5] = addressTextArea.getText().toLowerCase().trim();
-        userData[6] = usernameField.getText().toLowerCase().trim();
+        userData[6] = usernameField.getText().trim();
         userData[7] = passwordField.getText().trim();
-        userData[8] = retypePassField.getText().trim();
+        userData[8] = confirmPassField.getText().trim();   //Not needed remove in next patch
+        userData[9] = String.valueOf(securityQsBox.getSelectedItem());
+        userData[10] = securityAnsField.getText().trim();
     }
+
+    /** Order Of Input:-
+     *      0: First Name
+     *      1: Last  Name
+     *      2: Gender
+     *      3: Date of Birth
+     *      4: Phone no.
+     *      5: Address
+     *      6: Username
+     *      7: Password
+     *      8: Confirm Password
+     *      9: Security Question
+     *      10: Security Answer
+     **/
 
     public void uploadBioToDatabase() {
         setUserData();
         userData = getUserData();
-        Driver.dataAgent.addUser(userData[6],userData[7],userData[0],userData[1],userData[2],userData[5],null,null,userData[4],userData[3]);
+        Driver.dataAgent.addUser(userData[6],userData[7],userData[0],userData[1],userData[2],userData[5],userData[9],userData[10],userData[4],userData[3]);
     }
-
 
     public String[] getUserData() {
         return this.userData;
@@ -723,15 +817,14 @@ public class SignUpMenu extends JFrame {
 
 //==========================================> NAMES VALIDATIONS FUNCTION <==============================================
 
+    //Fix in next patch make it neater
+
     public Boolean isContainsSpecialChar(String str) {
         for (int i = 0; i < str.length(); i++) {
             if (str.charAt(i) < '0' || str.charAt(i) > '9') {
                 if (str.charAt(i) < 'A' || str.charAt(i) > 'Z') {
                     if (str.charAt(i) < 'a' || str.charAt(i) > 'z') {
-                        if (str.charAt(i) != '_') {
-                            return true;
-                        }
-                        return false;
+                        return str.charAt(i) != '_';
                     }
                     return false;
                 }

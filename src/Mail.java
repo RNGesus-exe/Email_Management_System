@@ -62,19 +62,6 @@ public class Mail {
         return Driver.dataAgent.getId(username,password);
     }
 
-    public boolean checkUserRepetition(String username)
-    {
-        return Driver.dataAgent.checkUserRepetition(username)!=-1;
-    }
-
-    public void addUser(String username,String password,String firstName,String lastName,String gender,String address,String question,String answer) {
-        Driver.dataAgent.addUser(username,password,firstName,lastName,gender,address,question,answer);
-    }
-
-    public boolean checkUser(String username,String password){
-        return Driver.dataAgent.getId(username,password)!=-1;
-    }
-
     public void setChildMail(int sender_id)
     {
         Driver.mail.setChildMail(sender_id);

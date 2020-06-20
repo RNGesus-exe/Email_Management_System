@@ -5,7 +5,6 @@ import java.awt.*;
 import java.awt.event.*;
 import java.awt.font.TextAttribute;
 import java.awt.geom.RoundRectangle2D;
-import java.sql.SQLException;
 import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
@@ -43,7 +42,7 @@ public class ComposeMail extends JFrame {
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
-    public ComposeMail(String username) {
+    public ComposeMail() {
 
 //==========================================> MAIN J-FRAME <============================================================
 
@@ -51,6 +50,7 @@ public class ComposeMail extends JFrame {
         this.setUndecorated(true);
         setShape(new RoundRectangle2D.Double(0, 0, 600, 500, 30, 30));
         setLayout(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
@@ -101,7 +101,7 @@ public class ComposeMail extends JFrame {
         closeLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+                dispose();
             }
         });
 
@@ -222,28 +222,6 @@ public class ComposeMail extends JFrame {
         subjectField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         subjectField.setCaretColor(Color.white);
         subjectField.setFont(font);
-        subjectField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    try {
-                        logInCondition();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
 
 //==========================================> TEXT AREA <===============================================================
 
@@ -298,27 +276,6 @@ public class ComposeMail extends JFrame {
                 }
             }
         });
-        btn_Discard.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Are you sure you want to discard the current mail?","Discard Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
-
 //==========================================> DRAFT BUTTON <===========================================================
 
         btn_Draft = new JButton("Draft");
@@ -333,45 +290,16 @@ public class ComposeMail extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (!(recipientField.getText().equals("") && textArea.getText().equals("") && subjectField.getText().equals(""))) {
-                    //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,false,true,false,0,0);
-                    //Driver.dataAgent.addMail(mailbody);
+                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                    Driver.dataAgent.addMail(mailbody);
                     dispose();
-                } else {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Are you sure you want to draft an empty mail?","Empty Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
-                        //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,false,true,false,0,0);
-                        //Driver.dataAgent.addMail(mailbody);
-                        dispose();
-                    }
+                }
+                else if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Some Fields of mail are empty, Do you till want to save as draft?","Empty Fields in Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
+                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                    Driver.dataAgent.addMail(mailbody);
+                    dispose();
                 }
             }
-        });
-        btn_Draft.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (!(recipientField.getText().equals("") && textArea.getText().equals("") && subjectField.getText().equals(""))) {
-                        //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,false,true,false,0,0);
-                        //Driver.dataAgent.addMail(mailbody);
-                        dispose();
-                    } else {
-                        if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Are you sure you want to draft an empty mail?","Empty Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
-                            //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,false,true,false,0,0);
-                            //Driver.dataAgent.addMail(mailbody);
-                            dispose();
-                        }
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> SEND BUTTON <===========================================================
@@ -393,38 +321,11 @@ public class ComposeMail extends JFrame {
                 else if (Driver.mail.checkMultipleUsers(recipientField.getText())!=null) {
                     JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"The entered recipient "+Driver.mail.checkMultipleUsers(recipientField.getText())+" doesn't exist!","Invalid Recipient",JOptionPane.ERROR_MESSAGE);
                 } else {
-                    //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,true,false,false,0,0);
-                    //Driver.dataAgent.addMail(mailbody);
+                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,true,false,false,0,0);
+                    Driver.dataAgent.addMail(mailbody);
                     dispose();
                 }
             }
-        });
-        btn_Send.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    if (recipientField.getText().equals("")) {
-                        JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"You cannot send a mail with no recipient!","Empty Recipient",JOptionPane.ERROR_MESSAGE);
-                    }
-                    else if (Driver.mail.checkMultipleUsers(recipientField.getText())!=null) {
-                        JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"The entered recipient "+Driver.mail.checkMultipleUsers(recipientField.getText())+" doesn't exist!","Invalid Recipient",JOptionPane.ERROR_MESSAGE);
-                    } else {
-                        //MailBody mailbody = new MailBody(recipientField.getText(),username,textBox.getText(),subjectField.getText(),false,false,true,false,false,0,0);
-                        //Driver.dataAgent.addMail(mailbody);
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
@@ -453,19 +354,6 @@ public class ComposeMail extends JFrame {
 
         setVisible(true);
 
-    }
-
-//==========================================> LOG IN CONDITION <========================================================
-
-    // You will check for the Correct Username and Password here.
-    public void logInCondition() throws SQLException {
-        if (Driver.mail.getId(recipientField.getText().trim(), subjectField.getText().trim())!=-1){
-            Driver.mail.loadUserdata(Driver.mail.getId(recipientField.getText().trim()));
-            dispose();
-            //EmailMenu to be added here   --Shaheryar
-        } else {
-            JOptionPane.showMessageDialog(ComposeMail.super.rootPane, "Error! Either Username or Password is incorrect!", "Error", JOptionPane.ERROR_MESSAGE);
-        }
     }
 
 }

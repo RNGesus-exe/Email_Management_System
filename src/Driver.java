@@ -10,12 +10,11 @@ public class Driver {
 
     public static void main(String[] args) throws SQLException {
         Connection connectionAgent = ConnectionManager.getConnection();  //Connects to MySql through Xampp
-        if(connectionAgent != null) {
+        if (connectionAgent != null) {
             dataAgent = new DatabaseManager(connectionAgent);
             new MainMenu();
-        }
-        else {
-            JOptionPane.showMessageDialog(null,"Connection was not established!","Database connection Error",JOptionPane.WARNING_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "Connection was not established!", "Database connection Error", JOptionPane.WARNING_MESSAGE);
         }
     }
 }

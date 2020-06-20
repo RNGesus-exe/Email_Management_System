@@ -14,15 +14,10 @@ import java.util.Map;
 
 public class ForgottenPass{
 
-//==========================================> PRIVATE DATA MEMBERS <====================================================
+//==========================================> PRIVATE FRAMES <====================================================
 
     private JFrame frame1 = new JFrame();
     private JFrame frame2 = new JFrame();
-
-    private String [] securityQuestions = { "Security Question no. 1",
-                                            "Security Question no. 2",
-                                            "Security Question no. 3",
-                                            "Security Question no. 4"};
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
@@ -55,10 +50,12 @@ public class ForgottenPass{
         JLabel securityQstLabel;
         JLabel securityAnsLabel;
         JTextField usernameField;
+        JTextField securityQstField;
         JTextField securityAnsField;
 
         JButton btn_Return;
         JButton btn_ResetPass;
+        JButton btn_check_username;
 
         Font font;
         Map attributes;
@@ -185,22 +182,22 @@ public class ForgottenPass{
         font = new Font("Arial", Font.BOLD, 16);
 
         usernameLabel = new JLabel("Username ");
-        usernameLabel.setBounds(50, 110, 100, 20);
+        usernameLabel.setBounds(40, 110, 100, 20);
         usernameLabel.setForeground(new Color(243, 241, 239));
         usernameLabel.setFont(font);
 
 //==========================================> SECURITY QUEStION LABEL <=================================================
 
         /** Security Question Comes here -----> -----> ----> \|*/
-        securityQstLabel = new JLabel("Security Question: ");
-        securityQstLabel.setBounds(50, 150, 450, 20);
+        securityQstLabel = new JLabel("Question: ");
+        securityQstLabel.setBounds(40, 150, 100, 20);
         securityQstLabel.setForeground(new Color(243, 241, 239));
         securityQstLabel.setFont(font);
 
 //==========================================> SECURITY ANSWER LABEL <===================================================
 
         securityAnsLabel = new JLabel("Answer");
-        securityAnsLabel.setBounds(50, 190, 120, 20);
+        securityAnsLabel.setBounds(40, 190, 120, 20);
         securityAnsLabel.setForeground(new Color(243, 241, 239));
         securityAnsLabel.setFont(font);
 
@@ -209,7 +206,7 @@ public class ForgottenPass{
         font = new Font("Arial", Font.PLAIN, 16);
 
         usernameField = new JTextField();
-        usernameField.setBounds(200, 110, 250, 20);
+        usernameField.setBounds(130, 110, 250, 20);
         usernameField.setBackground(new Color(46, 49, 49));
         usernameField.setForeground(new Color(243, 241, 239));
         usernameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -235,7 +232,7 @@ public class ForgottenPass{
 //==========================================> SECURITY ANSWER TEXT FIELD <==============================================
 
         securityAnsField = new JTextField();
-        securityAnsField.setBounds(200, 190, 250, 20);
+        securityAnsField.setBounds(130, 190, 250, 20);
         securityAnsField.setBackground(new Color(46, 49, 49));
         securityAnsField.setForeground(new Color(243, 241, 239));
         securityAnsField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -264,6 +261,34 @@ public class ForgottenPass{
             public void keyReleased(KeyEvent e) { }
         });
 
+//==========================================> USERNAME TEXT FIELD <=====================================================
+
+        securityQstField = new JTextField("Press the check button after entering username");
+        securityQstField.setBounds(120, 150, 350, 20);
+        securityQstField.setBackground(new Color(46, 49, 49));
+        securityQstField.setForeground(new Color(243, 241, 239));
+        securityQstField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        securityQstField.setCaretColor(Color.white);
+        securityQstField.setFont(font);
+        securityQstField.setEnabled(false);
+        securityQstField.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) { }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                    if (JOptionPane.showConfirmDialog(frame2, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                        frame2.dispose();
+                    }
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) { }
+        });
+
+
 //==========================================> RETURN BUTTON <===========================================================
 
         font = new Font("Arial", Font.BOLD, 16);
@@ -279,13 +304,8 @@ public class ForgottenPass{
         btn_Return.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                //  |Username|   |Security Q|  |His Answer|
-//                if (   true   &&     true    &&    true   ) {
-//                      frame1.dispose();
-//                      frame_2();
-//                } else {
-//                    JOptionPane.showMessageDialog(frame2, "Error! Invalid Username or Answer Entered", "Invalid username or Answer!", JOptionPane.ERROR_MESSAGE);
-//                }
+                frame1.dispose();
+                new LogInMenu();
             }
         });
         btn_Return.addKeyListener(new KeyListener() {
@@ -326,10 +346,17 @@ public class ForgottenPass{
         btn_ResetPass.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    resetPassCondition();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
+                if(securityAnsField.getText().toLowerCase().trim().equals(Driver.dataAgent.getUserSecurityQuestionAnswer(Driver.dataAgent.getId(usernameField.getText().trim())).toLowerCase())) {
+                    frame1.dispose();
+                    frame_2(usernameField.getText().trim());
+                }
+                else if(usernameField.getText().trim().equals("") || securityAnsField.getText().trim().equals(""))
+                {
+                    JOptionPane.showMessageDialog(null, "User Field or Answer Field is empty", "Invalid Arguments", JOptionPane.ERROR_MESSAGE);
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "The Answer was not correct !", "Invalid Answer", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -356,6 +383,29 @@ public class ForgottenPass{
             public void keyReleased(KeyEvent e) { }
         });
 
+//==========================================> ADDING USERNAME CHECK BUTTON <============================================
+
+        btn_check_username = new JButton("Check");
+        btn_check_username.setBounds(400, 110, 80, 30);
+        btn_check_username.setBackground(new Color(34, 167, 240));
+        btn_check_username.setForeground(new Color(243, 241, 239));
+        btn_check_username.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_check_username.setToolTipText("Checks if username exists");
+        btn_check_username.setFont(font);
+        btn_check_username.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if((Driver.dataAgent.getId(usernameField.getText().trim()))!=-1)
+                {
+                    securityQstField.setText(Driver.dataAgent.getUserSecurityQuestion(Driver.dataAgent.getId(usernameField.getText().trim())));
+                }
+                else
+                {
+                    JOptionPane.showMessageDialog(null, "The entered username doesn't exist", "Incorrect Username", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
         titleBar.add(titleLabel);
@@ -369,9 +419,11 @@ public class ForgottenPass{
         mainBody.add(securityQstLabel);
         mainBody.add(securityAnsLabel);
         mainBody.add(usernameField);
+        mainBody.add(securityQstField);
         mainBody.add(securityAnsField);
         mainBody.add(btn_Return);
         mainBody.add(btn_ResetPass);
+        mainBody.add(btn_check_username);
 
         frame1.add(titleBar);
         frame1.add(mainBody);
@@ -384,7 +436,7 @@ public class ForgottenPass{
 
     }
 
-    public void frame_2() {
+    public void frame_2(String username) {
 
 //==========================================> FUNCTION'S DATA MEMBERS <=================================================
 
@@ -527,16 +579,6 @@ public class ForgottenPass{
                 JOptionPane.showMessageDialog(frame2, scrollPane, "About Us", -1, null);
             }
         });
-
-//==========================================> USERNAME LABEL <==========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
-
-        usernameLabel = new JLabel("Username ");
-        usernameLabel.setBounds(50, 110, 100, 20);
-        usernameLabel.setForeground(new Color(243, 241, 239));
-        usernameLabel.setFont(font);
-
 //==========================================> PASSWORD LABEL <==========================================================
 
         passwordLabel = new JLabel("New Password");
@@ -550,34 +592,6 @@ public class ForgottenPass{
         confirmPassLabel.setBounds(50, 190, 120, 20);
         confirmPassLabel.setForeground(new Color(243, 241, 239));
         confirmPassLabel.setFont(font);
-
-//==========================================> USERNAME TEXT FIELD <=====================================================
-
-        font = new Font("Arial", Font.PLAIN, 16);
-
-        usernameField = new JTextField();
-        usernameField.setBounds(200, 110, 250, 20);
-        usernameField.setBackground(new Color(46, 49, 49));
-        usernameField.setForeground(new Color(243, 241, 239));
-        usernameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        usernameField.setCaretColor(Color.white);
-        usernameField.setFont(font);
-        usernameField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(frame2, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        frame2.dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
 
 //==========================================> PASSWORD TEXT FIELD <=====================================================
 
@@ -695,34 +709,26 @@ public class ForgottenPass{
         btn_LogInn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                try {
-                    resetPassCondition();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-        btn_LogInn.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(frame2, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        frame2.dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                if (passwordField.getText().trim().equals(confirmPassField.getText().trim()) && (!passwordField.getText().equals(""))) {
                     try {
-                        resetPassCondition();
+                        Driver.dataAgent.changeUserPassword(username, passwordField.getText().trim());
                     } catch (SQLException ex) {
                         ex.printStackTrace();
                     }
+                    JOptionPane.showMessageDialog(null, "Password has been successfully changed!", "Password Changed", JOptionPane.INFORMATION_MESSAGE);
+                    frame2.dispose();
+                    new LogInMenu();
+                }
+
+                else if(passwordField.getText().trim().equals("") || confirmPassField.getText().trim().equals(""))
+                {
+                    JOptionPane.showMessageDialog(null, "A field has been left empty!", "Invalid Argument", JOptionPane.ERROR_MESSAGE);
+                }
+                else if(!(passwordField.getText().trim().equals(confirmPassField.getText().trim())))
+                {
+                    JOptionPane.showMessageDialog(null, "Passwords do not match!", "Password Mismatch", JOptionPane.ERROR_MESSAGE);
                 }
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
@@ -734,10 +740,8 @@ public class ForgottenPass{
 
         mainBody.add(mainLabel);
         mainBody.add(infoLabel);
-        mainBody.add(usernameLabel);
         mainBody.add(passwordLabel);
         mainBody.add(confirmPassLabel);
-        mainBody.add(usernameField);
         mainBody.add(passwordField);
         mainBody.add(confirmPassField);
         mainBody.add(btn_Return);
