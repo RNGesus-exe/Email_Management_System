@@ -18,6 +18,8 @@ public class MailBody {
     private boolean spam;
     private int child_mail;
     private int permaTrash;
+    private int draft_user;
+    private String multiple_recipients;
 
 //-------------------------------------------CONSTRUCTORS----------------------------------------------------------------
 
@@ -40,6 +42,20 @@ public class MailBody {
 
 //--------------------------------------------SETTERS/GETTERS------------------------------------------------------
 
+
+    public int getDraft_user() {
+        return draft_user;
+    }
+    public void setDraft_user(int draft_user) {
+        this.draft_user = draft_user;
+    }
+
+    public String getMultiple_recipients() {
+        return multiple_recipients;
+    }
+    public void setMultiple_recipients(String multiple_recipients) {
+        this.multiple_recipients = multiple_recipients;
+    }
 
     public boolean isRecipient_starred() {
         return recipient_starred;

@@ -17,7 +17,7 @@ public class DatabaseManager {
                     ",password varchar(55),dateTime timestamp,firstName varchar(55),lastName varchar(55),gender int,address varchar(55)" +
                     ",securityQuestion varchar(70),securityQuestionAnswer varchar(55),birth_date varchar(55),phoneNumber varchar(55))");
             statement.execute("CREATE TABLE IF NOT EXISTS mail (id int primary key unique auto_increment,recipient_id int,subject varchar(100)" +
-                    ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean)");
+                    ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean,draft int,multiple_recipients varchar(55))");
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
@@ -57,18 +57,28 @@ public class DatabaseManager {
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
-    public void addMail(MailBody mail) {
-        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred)VALUES(?,?,?,?,?,?,?,?,?)";
+    public void addMail(MailBody mail){
+        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred,draft,multiple_recipients)VALUES(?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ppStatement = connection.prepareStatement(query);
-            StringTokenizer recipients = new StringTokenizer(mail.getRecipient(),",");
-            while(recipients.hasMoreTokens())
+            StringTokenizer recipients = new StringTokenizer(mail.getRecipient(), ",");
+            if (mail.isDraft())   //Body to save mail as draft
             {
-                ppStatement.setInt(1,getId(recipients.nextToken()));
-                ppStatement.setString(2,mail.getSubject());
-                ppStatement.setString(3,mail.getText());
-                ppStatement.setInt(4,getId(mail.getSender()));
-                int status;
+                ppStatement.setInt(1, -1);
+                ppStatement.setInt(5, 3);    //Automatically Set as Draft
+                ppStatement.setInt(4, -1);  //To make sender not reachable
+                ppStatement.setInt(10, getId(mail.getSender()));  //Set sender here to catch when loading data
+                ppStatement.setString(11,mail.getRecipient());
+                ppStatement.setBoolean(6, mail.isRecipient_starred());
+                ppStatement.setBoolean(9, mail.isSender_starred());
+                ppStatement.setInt(7, -1); //Child Mail -- Used for reply hierarchy
+                ppStatement.setInt(8, -1); //Perma Trash -- Used for perma deleting mail
+                ppStatement.setString(2, mail.getSubject());
+                ppStatement.setString(3, mail.getText());
+            } else {  //Normal Mail to be sent to user(s)
+                while (recipients.hasMoreTokens()) {
+                    ppStatement.setInt(1, getId(recipients.nextToken()));
+                    int status;
             /*
             1-UnRead - Inbox
             2-Read - Inbox   //The mail cannot be read until it isn't in unread form first
@@ -76,22 +86,31 @@ public class DatabaseManager {
             4-Trash
             5-Spam
              */
-                if(mail.isUnread()) {
-                    status = 1;
+                    if (mail.isUnread()) {
+                        status = 1;
+                    } else if (mail.isTrash()) {
+                        status = 4;
+                    } else if (mail.isSpam()) {
+                        status = 5;
+                    } else {
+                        status = 2;
+                    }
+                    ppStatement.setInt(5, status);
+                    ppStatement.setInt(4, getId(mail.getSender()));
+                    ppStatement.setBoolean(6, mail.isRecipient_starred());
+                    ppStatement.setString(10,null);
+                    ppStatement.setBoolean(9, mail.isSender_starred());
+                    ppStatement.setInt(7, -1); //Child Mail -- Used for reply hierarchy
+                    ppStatement.setInt(8, -1); //Perma Trash -- Used for perma deleting mail
+                    ppStatement.setString(2, mail.getSubject());
+                    ppStatement.setString(3, mail.getText());
                 }
-                else if (mail.isDraft()) { status = 3; }
-                else if (mail.isTrash()) { status = 4; }
-                else if (mail.isSpam()) { status = 5; }
-                else { status = 2; }
-
-                ppStatement.setInt(5, status);
-                ppStatement.setBoolean(6,mail.isRecipient_starred());
-                ppStatement.setInt(7,0);
-                ppStatement.setInt(8,0);
-                ppStatement.setBoolean(9,mail.isSender_starred());
-                ppStatement.execute();
             }
-        } catch (SQLException e) { e.printStackTrace(); }
+            ppStatement.execute();
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public int getId(String username,String password) {
@@ -141,6 +160,18 @@ public class DatabaseManager {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
+
+    public boolean checkPhoneNumberRepetition(String phoneNumber) {
+        String query = "SELECT * FROM user where phoneNumber = ?";
+        try {
+            PreparedStatement ppStatement = connection.prepareStatement(query);
+            ppStatement.setString(1,phoneNumber);
+            ResultSet rs = ppStatement.executeQuery();
+            return rs.next();
+        } catch (SQLException e) { e.printStackTrace(); }
+        return false;
+    }
+
 
     public String getUserSecurityQuestion(int id) {
         String query = "SELECT * FROM user where id = ?";
@@ -222,6 +253,7 @@ public class DatabaseManager {
         PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where recipient_id = ?");
         ppStatement.setInt(1, id);
         ResultSet rs = ppStatement.executeQuery();
+
         while (rs.next()) {
             MailBody mailBody = new MailBody();
             mailBody.setId(id);
@@ -229,6 +261,49 @@ public class DatabaseManager {
             mailBody.setSubject(rs.getString(3));
             mailBody.setText(rs.getString(4));
             mailBody.setSender(getUsername(rs.getInt(5)));
+             /*
+            1-UnRead - Inbox
+            2-Read - Inbox   //The mail cannot be read until it isn't in unread form first
+            3-Draft
+            4-Trash
+            5-Spam
+             */
+             if (rs.getInt(6) == 1) {
+                     mailBody.setUnread(true);
+                 } else if (rs.getInt(6) == 3) {
+                     mailBody.setDraft(true);
+                 } else if (rs.getInt(6) == 4) {
+                     mailBody.setTrash(true);
+                 } else if (rs.getInt(6) == 5) {
+                     mailBody.setSpam(true);
+                 }
+
+            //If all conditions fail it is read by default
+
+            mailBody.setRecipient_starred(rs.getBoolean(7));
+            mailBody.setDateTime(rs.getDate(8));
+            mailBody.setChild_mail(rs.getInt(9));
+            mailBody.setPermaTrash(rs.getInt(10));
+            mailBody.setSender_starred(rs.getBoolean(11));
+            mails.add(mailBody);
+        }
+        return mails;
+    }
+
+    public ArrayList<MailBody> loadUserDraftMailsFromDataBase(int id) throws SQLException {
+        ArrayList<MailBody> mails = new ArrayList<>();
+        //--------------------------------------mails-MAIL is loaded---------------------------------------------------
+        PreparedStatement ppStatement = connection.prepareStatement("SELECT * FROM mail where draft = ?");
+        ppStatement.setInt(1, id);
+        ResultSet rs = ppStatement.executeQuery();
+
+        while (rs.next()) {
+            MailBody mailBody = new MailBody();
+            mailBody.setId(id);
+            mailBody.setRecipient(rs.getString(13));   //Gets the recipient from the Multi Recipient Column
+            mailBody.setSubject(rs.getString(3));
+            mailBody.setText(rs.getString(4));
+            mailBody.setSender(getUsername(rs.getInt(12)));
              /*
             1-UnRead - Inbox
             2-Read - Inbox   //The mail cannot be read until it isn't in unread form first
@@ -253,6 +328,8 @@ public class DatabaseManager {
             mailBody.setChild_mail(rs.getInt(9));
             mailBody.setPermaTrash(rs.getInt(10));
             mailBody.setSender_starred(rs.getBoolean(11));
+            mailBody.setMultiple_recipients(rs.getString(13));
+            mailBody.setDraft_user(rs.getInt(12));
             mails.add(mailBody);
         }
         return mails;
@@ -304,6 +381,7 @@ public class DatabaseManager {
         Driver.mail.setUser(loadUserInfoFromDataBase(id));
         Driver.mail.setMails(loadUserMailsFromDataBase(id));
         Driver.mail.setSent(loadUserSentMailsFromDataBase(id));
+        Driver.mail.setDraft(loadUserDraftMailsFromDataBase(id));
     }
 
     private void setChild(int parent_id,int child_id ) throws SQLException {

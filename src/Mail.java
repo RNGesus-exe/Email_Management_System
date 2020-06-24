@@ -8,8 +8,13 @@ public class Mail {
     private User user;
     private ArrayList <MailBody> mails;
     private ArrayList <MailBody> sent;
+    private ArrayList <MailBody> draft;
 
     public Mail() {
+    }
+
+    public void setDraft(ArrayList<MailBody> draft) {
+        this.draft = draft;
     }
 
     public User getUser() {
@@ -106,10 +111,7 @@ public class Mail {
         return mails;
     }
     public ArrayList<MailBody> getDraft() {
-        ArrayList<MailBody> draft = new ArrayList<MailBody>();
-        for (MailBody mailbody: mails) {
-            if (mailbody.isDraft()) { draft.add(mailbody); }
-        } return draft;
+         return draft;
     }
     public ArrayList<MailBody> getStarred() {
         ArrayList<MailBody> starred = new ArrayList<MailBody>();
