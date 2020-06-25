@@ -1,5 +1,6 @@
 import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -11,7 +12,77 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class HelperClasses { }
+public class HelperClasses {
+
+    public JButton button;
+
+//==========================================> CLASS J-TABLE BUTTON RENDERER <===========================================
+
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            setText((value == null) ? "" : value.toString());
+            return this;
+        }
+    }
+
+//==========================================> CLASS J-TABLE BUTTON EDITOR <=============================================
+
+    class ButtonEditor extends DefaultCellEditor {
+
+        private String label;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            label = (value == null) ? "" : value.toString();
+            HelperClasses.this.button.setText(label);
+            return HelperClasses.this.button;
+        }
+
+        public Object getCellEditorValue() {
+            return label;
+        }
+    }
+
+//==========================================> CLASS J-TABLE BUTTON MODEL <==============================================
+
+    static class JTableButtonModel extends AbstractTableModel {
+
+        private Object[][] rows = {{"Button1", new JButton("Button1")},{"Button2", new JButton("Button2")},{"Button3", new JButton("Button3")}, {"Button4", new JButton("Button4")}};
+        private String[] columns = {"Sender", "Subject", "Date", "Star", "Del"};
+
+        public String getColumnName(int column) {
+            return columns[column];
+        }
+
+        public int getRowCount() {
+            return rows.length;
+        }
+
+        public int getColumnCount() {
+            return columns.length;
+        }
+
+        public Object getValueAt(int row, int column) {
+            return rows[row][column];
+        }
+
+        public boolean isCellEditable(int row, int column) {
+            return false;
+        }
+
+        public Class getColumnClass(int column) {
+            return getValueAt(0, column).getClass();
+        }
+    }
+
+}
 
 //==========================================> CLASS DATE LABEL FORMATTER <==============================================
 
@@ -90,52 +161,21 @@ class FrameDragListener extends MouseAdapter {
     }
 }
 
-//==========================================> CLASS J-TABLE BUTTON RENDERER <===========================================
+//==========================================> CLASS FRAME DRAG LISTENER <===============================================
 
-class JTableButtonRenderer implements TableCellRenderer {
+class CellRenderer extends DefaultTableCellRenderer {
 
-    private TableCellRenderer defaultRenderer;
+    private static final long serialVersionUID = 1L;
 
-    public JTableButtonRenderer(TableCellRenderer renderer) {
-        defaultRenderer = renderer;
-    }
-
+    @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        if(value instanceof Component)
-            return (Component)value;
-        return defaultRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    }
-}
+        super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 
-//==========================================> CLASS J-TABLE BUTTON MODEL <==============================================
-
-class JTableButtonModel extends AbstractTableModel {
-
-    private Object[][] rows = {{"Button1", new JButton("Button1")},{"Button2", new JButton("Button2")},{"Button3", new JButton("Button3")}, {"Button4", new JButton("Button4")}};
-    private String[] columns = {"Count", "Buttons"};
-
-    public String getColumnName(int column) {
-        return columns[column];
-    }
-
-    public int getRowCount() {
-        return rows.length;
-    }
-
-    public int getColumnCount() {
-        return columns.length;
-    }
-
-    public Object getValueAt(int row, int column) {
-        return rows[row][column];
-    }
-
-    public boolean isCellEditable(int row, int column) {
-        return false;
-    }
-
-    public Class getColumnClass(int column) {
-        return getValueAt(0, column).getClass();
+        if (true) {
+            this.setValue(table.getValueAt(row, column));
+            this.setFont(this.getFont().deriveFont(Font.BOLD));
+        }
+        return this;
     }
 }
 
