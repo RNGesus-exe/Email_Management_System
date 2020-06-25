@@ -15,10 +15,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
     private JLabel titleLabel;
     private JLabel closeLabel;
     private JLabel minusLabel;
-
     private JLabel mainLabel;
-
-    private Font font;
 
     private ArrayList<MailBody> dataValues = new ArrayList<>();
     private String [][] mails = null;
@@ -33,24 +30,31 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
     private JButton btn_AllMail;
     private JButton btn_Spam;
     private JButton btn_Trash;
+    private JButton btn_GoBack;
+    private JButton btn_Reply;
 
     private JScrollPane jScrollPane;
     private JTable jTable;
     private JPanel jTablePanel;
+    private JPanel jShowMailPanel;
     private TableCellRenderer tableRenderer;
     private DefaultTableModel model;
 
+    private JTextArea textArea;
+    private static String email = "";
+
     private int y_Axis = 200;
+    private Font font;
 
     public EmailMenu() {
 
 //==========================================> MAIN J-FRAME <============================================================
 
-        setDefaultCloseOperation(EXIT_ON_CLOSE);
         setBounds(150, 50, 1200, 700);
         this.setUndecorated(true);
         setShape(new RoundRectangle2D.Double(0, 0, 1200, 700, 30, 30));
         setLayout(null);
+        setDefaultCloseOperation(EXIT_ON_CLOSE);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
@@ -103,7 +107,12 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         closeLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+
+                if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+                    //-- Update Data
+                    System.exit(0);
+                }
+                //-- Update Data
             }
         });
 
@@ -125,7 +134,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
 
 //==========================================> MAIN LABEL <==============================================================
 
-        mainLabel = new JLabel("Welcome Back "+Driver.mail.getUser().getFirstName());
+        mainLabel = new JLabel("Welcome Back " + Driver.mail.getUser().getFirstName());
         mainLabel.setBounds(400, 50, 500, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
         mainLabel.setFont(new Font("Arial", Font.BOLD, 32));
@@ -141,31 +150,11 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Account.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Account.setToolTipText("Information About the Account");
         btn_Account.setFont(font);
-
         btn_Account.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
 
             }
-        });
-        btn_Account.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog (EmailMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> LOG OUT BUTTON <==========================================================
@@ -177,33 +166,18 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_LogOut.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_LogOut.setToolTipText("Logs Out from the Account");
         btn_LogOut.setFont(font);
-
         btn_LogOut.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                dispose();
-                Driver.mail.updateUserdata(Driver.mail.getUser().getId());
-                new LogInMenu();
-            }
-        });
-        btn_LogOut.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
 
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
+                if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+                    //-- Update Data
+                    dispose();
+                    Driver.mail.updateUserdata(Driver.mail.getUser().getId());
+                    new LogInMenu();
                 }
-                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog (EmailMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
+                //-- Update Data
             }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> COMPOSE BUTTON <==========================================================
@@ -215,34 +189,13 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Compose.setBackground(new Color(34, 167, 240));
         btn_Compose.setForeground(new Color(243, 241, 239));
         btn_Compose.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-
         btn_Compose.setFont(font);
-
         btn_Compose.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 new ComposeMail();
                 //                       /\ <-- Driver.mail.getUser().getUsername()
             }
-        });
-        btn_Compose.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog (EmailMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
         });
 
 //==========================================> INBOX BUTTON <============================================================
@@ -254,9 +207,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Inbox.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Inbox.setToolTipText("Shows Inbox & Read Mails");
         btn_Inbox.setFont(font);
-
         btn_Inbox.addActionListener(this);
-        btn_Inbox.addKeyListener(this);
 
 //==========================================> STARRED BUTTON <==========================================================
 
@@ -267,9 +218,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Starred.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Starred.setToolTipText("Shows Starred Mails");
         btn_Starred.setFont(font);
-
         btn_Starred.addActionListener(this);
-        btn_Starred.addKeyListener(this);
 
 //==========================================> SENT BUTTON <=============================================================
 
@@ -280,9 +229,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Sent.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Sent.setToolTipText("Shows Sent Mails");
         btn_Sent.setFont(font);
-
         btn_Sent.addActionListener(this);
-        btn_Sent.addKeyListener(this);
 
 //==========================================> DRAFTS BUTTON <===========================================================
 
@@ -293,9 +240,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Draft.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Draft.setToolTipText("Shows Draft Mails");
         btn_Draft.setFont(font);
-
         btn_Draft.addActionListener(this);
-        btn_Draft.addKeyListener(this);
 
 //==========================================> ALL MAIN BUTTON <=========================================================
 
@@ -306,9 +251,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_AllMail.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_AllMail.setToolTipText("Shows All Mails");
         btn_AllMail.setFont(font);
-
         btn_AllMail.addActionListener(this);
-        btn_AllMail.addKeyListener(this);
 
 //==========================================> SPAM BUTTON <=============================================================
 
@@ -319,9 +262,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Spam.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Spam.setToolTipText("Shows Spam Mails");
         btn_Spam.setFont(font);
-
         btn_Spam.addActionListener(this);
-        btn_Spam.addKeyListener(this);
 
 //==========================================> TRASH BUTTON <============================================================
 
@@ -332,9 +273,29 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Trash.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Trash.setToolTipText("Shows Trash Mails");
         btn_Trash.setFont(font);
-
         btn_Trash.addActionListener(this);
-        btn_Trash.addKeyListener(this);
+
+//==========================================> GO BACK BUTTON <==========================================================
+
+        btn_GoBack = new JButton("Go Back");
+        btn_GoBack.setBounds(0, 0, 100, 30);
+        btn_GoBack.setBackground(new Color(242, 38, 19));
+        btn_GoBack.setForeground(new Color(243, 241, 239));
+        btn_GoBack.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_GoBack.setToolTipText("Goes back to Mails");
+        btn_GoBack.setFont(font);
+        btn_GoBack.addActionListener(this);
+
+//==========================================> REPLY BUTTON <============================================================
+
+        btn_Reply = new JButton("Reply");
+        btn_Reply.setBounds(125, 0, 100, 30);
+        btn_Reply.setBackground(new Color(34, 167, 240));
+        btn_Reply.setForeground(new Color(243, 241, 239));
+        btn_Reply.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_Reply.setToolTipText("Replies to selected Emails");
+        btn_Reply.setFont(font);
+        btn_Reply.addActionListener(this);
 
 //==========================================> ADDING ICONS <============================================================
 
@@ -349,16 +310,66 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
 
 //==========================================> J-TABLE EMAIL DISPLAY <===================================================
 
-
         jTablePanel = new JPanel();
         jTablePanel.setBounds(225, 125, 950, 500);
         jTablePanel.setBackground(new Color(52, 73, 94));
         jTablePanel.setLayout(new BorderLayout());
 
+//==========================================> J-TEXT AREA EMAIL DISPLAY <===============================================
+
+        textArea = new JTextArea();
+        textArea.setBounds(0, 50, 950, 450);
+        textArea.setBackground(new Color(243, 241, 239));
+        textArea.setForeground(new Color(0, 0, 0));
+        textArea.setCaretColor(Color.white);
+        textArea.setEditable(false);
+        textArea.setLineWrap(true);
+        textArea.setFont(new Font("Arial", Font.BOLD, 15));
+
+        JScrollPane scrollBar = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+//==========================================> J-PANEL SHOW EMAIL <======================================================
+
+        jShowMailPanel = new JPanel();
+        jShowMailPanel.setBounds(225, 125, 950, 500);
+        jShowMailPanel.setBackground(new Color(52, 73, 94));
+        jShowMailPanel.setLayout(new BorderLayout());
+        jShowMailPanel.setVisible(false);
+        jShowMailPanel.add(textArea);
+
+//==========================================> ADD EMAIL TO TEXT AREA HERE <=============================================
+
+        String mail = "  Sender : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \t\t\t\t" + "  Date      : _ _ / _ _ / _ _ _ _ \n" +
+                "  Subject: _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+                "   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+                "   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
+                " \n\n <=========================================================================================================>\n\n";/*--------------------------*/
+        addMail(mail);
+
 //==========================================> J-TABLE EMAIL DISPLAY <===================================================
 
         jTableFunction();
         jTableCoordinatesFunction();
+
+        jTable.addMouseListener(new MouseAdapter() {
+            public void mousePressed(MouseEvent mouseEvent) {
+
+                JTable table =(JTable) mouseEvent.getSource();
+                Point point = mouseEvent.getPoint();
+                int row = table.rowAtPoint(point);
+
+                if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
+                    /**
+                     * Set unread to false.
+                     **/
+                    jTableDataFunction(null);
+                    jTable.setVisible(false);
+                    jTablePanel.setVisible(false);
+                    jShowMailPanel.setVisible(true);
+                    mainBody.updateUI();
+                }
+            }
+        });
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
@@ -368,7 +379,6 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         titleBar.add(minusLabel);
 
         mainBody.add(mainLabel);
-
         mainBody.add(btn_Account);
         mainBody.add(btn_LogOut);
         mainBody.add(btn_Compose);
@@ -379,7 +389,12 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         mainBody.add(btn_AllMail);
         mainBody.add(btn_Spam);
         mainBody.add(btn_Trash);
+
+        jShowMailPanel.add(btn_GoBack);
+        jShowMailPanel.add(btn_Reply);
+        jShowMailPanel.add(textArea);
         mainBody.add(jTablePanel);
+        mainBody.add(jShowMailPanel);
 
         add(titleBar);
         add(mainBody);
@@ -409,10 +424,10 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
 
     private void jTableFunction() {
         jScrollPane = new JScrollPane();
-        jTable = new JTable(new JTableButtonModel());
+        jTable = new JTable(new HelperClasses.JTableButtonModel());
 
         tableRenderer = jTable.getDefaultRenderer(JButton.class);
-        jTable.setDefaultRenderer(JButton.class, new JTableButtonRenderer(tableRenderer));
+        jTable.setDefaultRenderer(JButton.class, new HelperClasses.ButtonRenderer());
         JScrollPane scrollPane = new JScrollPane(jTable);
         jTablePanel.add(scrollPane, BorderLayout.CENTER);
 
@@ -423,13 +438,19 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
 
         dataValues = Driver.mail.getInbox();
         mails = new String[dataValues.size()][5];
-        for(int i=0;i<dataValues.size() ;i++) {
+
+        for (int i = 0; i < dataValues.size(); i++) {
             mails[i][0] = dataValues.get(i).getSender();
             mails[i][1] = dataValues.get(i).getSubject();
             mails[i][2] = dataValues.get(i).getDateTime().toString();
         }
 
         jTableDataFunction(mails);
+
+        //jTable.getColumn("Star").setCellRenderer(new HelperClasses.ButtonRenderer());
+        //jTable.getColumn("Star").setCellEditor(new HelperClasses.ButtonEditor(new JCheckBox()));
+        //jTable.getColumn("Trash").setCellRenderer(new HelperClasses.ButtonRenderer());
+        //jTable.getColumn("Trash").setCellEditor(new HelperClasses.ButtonEditor(new JCheckBox()));
 
     }
 
@@ -448,7 +469,9 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 return canEdit[columnIndex];
             }
         };
+
         jTable.setModel(model);
+
         //-- JTable Properties
         if (jTable.getColumnModel().getColumnCount() > 0) {
             jTable.getColumnModel().getColumn(0).setMinWidth(200);
@@ -487,6 +510,13 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         );
     }
 
+//==========================================> FUNCTION TO CREATE TABLE <================================================
+
+    public void addMail(String mail) {
+        email += mail;
+        textArea.setText(email);
+    }
+
 //==========================================> ACTION LISTENER <=========================================================
 
     @Override
@@ -499,7 +529,12 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         if (e.getSource() == btn_Inbox) {
             dataValues = Driver.mail.getInbox();
             mails = new String[dataValues.size()][5];
-            for(int i=0;i<dataValues.size() ;i++) {
+            for(int i = 0; i < dataValues.size() ; i++) {
+
+                if (dataValues.get(i).isUnread() == true) {
+                    jTable.getColumnModel().getColumn(0).setCellRenderer(new CellRenderer());
+                }
+
                 mails[i][0] = dataValues.get(i).getSender();
                 mails[i][1] = dataValues.get(i).getSubject();
                 mails[i][2] = dataValues.get(i).getDateTime().toString();

@@ -241,23 +241,6 @@ public class ComposeMail extends JFrame {
         JScrollPane scrollBar = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         textPane.add(scrollBar);
 
-        textArea.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
-
 //==========================================> DISCARD BUTTON <===========================================================
 
         btn_Discard = new JButton("Discard");
@@ -276,6 +259,7 @@ public class ComposeMail extends JFrame {
                 }
             }
         });
+
 //==========================================> DRAFT BUTTON <===========================================================
 
         btn_Draft = new JButton("Draft");
