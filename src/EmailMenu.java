@@ -150,12 +150,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Account.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Account.setToolTipText("Information About the Account");
         btn_Account.setFont(font);
-        btn_Account.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        btn_Account.addActionListener(e -> new AboutUser());
 
 //==========================================> LOG OUT BUTTON <==========================================================
 
@@ -166,18 +161,15 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_LogOut.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_LogOut.setToolTipText("Logs Out from the Account");
         btn_LogOut.setFont(font);
-        btn_LogOut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btn_LogOut.addActionListener(e -> {
 
-                if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
-                    Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
-                    dispose();
-                    Driver.mail.updateUserdata(Driver.mail.getUser().getId());
-                    new LogInMenu();
-                }
+            if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
                 Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
+                dispose();
+                Driver.mail.updateUserdata(Driver.mail.getUser().getId());
+                new LogInMenu();
             }
+            Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
         });
 
 //==========================================> COMPOSE BUTTON <==========================================================

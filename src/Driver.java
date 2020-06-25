@@ -12,8 +12,7 @@ public class Driver {
         Connection connectionAgent = ConnectionManager.getConnection();  //Connects to MySql through Xampp
         if (connectionAgent != null) {
             dataAgent = new DatabaseManager(connectionAgent);
-            //new MainMenu();
-            dataAgent.deleteMail(5);
+            new MainMenu();
         } else {   //In case Connection is not established
             JOptionPane.showMessageDialog(null, "Connection was not established!", "Database connection Error", JOptionPane.WARNING_MESSAGE);
         }

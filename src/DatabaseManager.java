@@ -297,6 +297,8 @@ public class DatabaseManager {
             user.setAddress(rs.getString(8));
             user.setSecurityQuestion(rs.getString(9));
             user.setSecurityQuestionAnswer(rs.getString(10));
+            user.setPhoneNumber(rs.getString(12));
+            user.setBirthDate(rs.getString(11));
             return user;
         } else {
             return null;
