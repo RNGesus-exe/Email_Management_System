@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.sql.Connection;
+import java.sql.SQLException;
 
 
 public class Driver {
@@ -7,7 +8,7 @@ public class Driver {
     public static Mail mail = new Mail();                  //Handles all Users Data in RAM
     public static DatabaseManager dataAgent = null;        //This agent helps in managing database
 
-    public static void main(String[] args){
+    public static void main(String[] args) throws SQLException {
         Connection connectionAgent = ConnectionManager.getConnection();  //Connects to MySql through Xampp
         if (connectionAgent != null) {
             dataAgent = new DatabaseManager(connectionAgent);

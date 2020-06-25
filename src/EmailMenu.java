@@ -109,10 +109,10 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             public void mouseClicked(MouseEvent e) {
 
                 if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
-                    //-- Update Data
+                    Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
                     System.exit(0);
                 }
-                //-- Update Data
+                Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
             }
         });
 
@@ -150,12 +150,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Account.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Account.setToolTipText("Information About the Account");
         btn_Account.setFont(font);
-        btn_Account.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-
-            }
-        });
+        btn_Account.addActionListener(e -> new AboutUser());
 
 //==========================================> LOG OUT BUTTON <==========================================================
 
@@ -166,18 +161,15 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_LogOut.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_LogOut.setToolTipText("Logs Out from the Account");
         btn_LogOut.setFont(font);
-        btn_LogOut.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
+        btn_LogOut.addActionListener(e -> {
 
-                if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
-                    //-- Update Data
-                    dispose();
-                    Driver.mail.updateUserdata(Driver.mail.getUser().getId());
-                    new LogInMenu();
-                }
-                //-- Update Data
+            if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
+                Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
+                dispose();
+                Driver.mail.updateUserdata(Driver.mail.getUser().getId());
+                new LogInMenu();
             }
+            Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
         });
 
 //==========================================> COMPOSE BUTTON <==========================================================
@@ -531,7 +523,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             mails = new String[dataValues.size()][5];
             for(int i = 0; i < dataValues.size() ; i++) {
 
-                if (dataValues.get(i).isUnread() == true) {
+                if (dataValues.get(i).isUnread()) {
                     jTable.getColumnModel().getColumn(0).setCellRenderer(new CellRenderer());
                 }
 
@@ -564,9 +556,21 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_AllMail) {
-            //-------------TO BE ADDED
+            dataValues = Driver.mail.getAllMails();
+            mails = new String[dataValues.size()][5];
+            for(int i=0;i<dataValues.size() ;i++) {
+                mails[i][0] = dataValues.get(i).getSender();
+                mails[i][1] = dataValues.get(i).getSubject();
+                mails[i][2] = dataValues.get(i).getDateTime().toString();
+            }
         } else if (e.getSource() == btn_Spam) {
-            //-------------TO BE ADDED
+            dataValues = Driver.mail.getSpam();
+            mails = new String[dataValues.size()][5];
+            for(int i=0;i<dataValues.size() ;i++) {
+                mails[i][0] = dataValues.get(i).getSender();
+                mails[i][1] = dataValues.get(i).getSubject();
+                mails[i][2] = dataValues.get(i).getDateTime().toString();
+            }
         } else if (e.getSource() == btn_Trash) {
             dataValues = Driver.mail.getTrash();
             mails = new String[dataValues.size()][5];

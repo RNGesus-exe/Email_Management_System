@@ -1,6 +1,8 @@
 import java.sql.Date;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.StringTokenizer;
 
 public class Mail {
@@ -87,7 +89,9 @@ public class Mail {
     public int getAmountOfInboxMails() {
         return mails.size();
     }
-    public int getAmountOfSentMails() { return sent.size();}
+    public int getAmountOfSentMails() {
+        return sent.size();
+    }
     public int getAmountOfDraftMails() {
         int count = 0;
         for (MailBody mailBody : mails) {
@@ -107,11 +111,28 @@ public class Mail {
         } return count;
     }
 
+    public ArrayList<MailBody> getSpam(){
+        ArrayList<MailBody> spam = new ArrayList<>();
+        for(MailBody mailbody: mails)
+        {
+            if(mailbody.isSpam())
+            {
+                spam.add(mailbody);
+            }
+        }return spam;
+    }
     public ArrayList<MailBody> getInbox(){
-        return mails;
+        ArrayList<MailBody> inbox = new ArrayList<>();
+        for(MailBody mailbody: mails)
+        {
+            if(!mailbody.isSpam())
+            {
+                inbox.add(mailbody);
+            }
+        }return inbox;
     }
     public ArrayList<MailBody> getDraft() {
-         return draft;
+        return draft;
     }
     public ArrayList<MailBody> getStarred() {
         ArrayList<MailBody> starred = new ArrayList<MailBody>();
@@ -127,5 +148,25 @@ public class Mail {
     }
     public ArrayList<MailBody> getSent() {
         return sent;
+    }
+    public ArrayList<MailBody> getAllMails() {
+        ArrayList<MailBody> allMails = new ArrayList<>();
+        allMails.addAll(mails);
+        allMails.addAll(sent);
+        allMails.addAll(draft);
+        ArrayList<Timestamp> timeStamps = new ArrayList<>();
+        for (MailBody allMail : allMails) {
+            timeStamps.add(allMail.getTimeStamp());
+        }
+        ArrayList<MailBody> temp = new ArrayList<>(); //Stores all correct order of all mails
+        Collections.sort(timeStamps);  //Sorts the whole array according to the time stamps
+        for (Timestamp timeStamp : timeStamps) {
+            for (MailBody allMail : allMails) {
+                if (allMail.getTimeStamp() == timeStamp) {
+                    temp.add(allMail);
+                }
+            }
+        }
+        return temp;
     }
 }
