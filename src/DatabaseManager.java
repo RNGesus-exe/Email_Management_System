@@ -4,6 +4,40 @@ import java.util.StringTokenizer;
 
 public class DatabaseManager {
 
+    private String[][] spamWords = {{"#1","$$$","100%"},         //List of spam words used in the checkSpam()
+    {"Act now",	"Action",	"Additional income"},
+            {"Affordable",	"All natural",	"Amazed"},
+            {"Apply now","Avoid",	"Be amazed"},
+            {"Beneficiary","Billing","Billion"},
+            {"Bonus","Boss","Buy"},
+            {"Call free","Cancel","Cash"},
+            {"Casino","Certified","Cheap"},
+            {"Click here","Clearance","Collect"},
+            {"Compare rates","Congratulations","Credit card"},
+            {"Cures","Deal","Dear friend"},
+            {"Debt","Discount","Direct email"},
+            {"Don't delete","Double your income","Earn"},
+            {"Extra","Expire","Fantastic"},
+            {"Free access","Freedom","Friend"},
+            {"Get it now","Great","Guarantee"},
+            {"Hello","Income","Increase sales"},
+            {"Instant","Investment","Junk"},
+            {"Limited","Lose","Lowest price"},
+            {"Luxury","Make money","Medicine"},
+            {"Money","Name","No credit check"},
+            {"Now","Obligation","Offer"},
+            {"Only","Open","Order now"},
+            {"Please","Presently","Problem"},
+            {"Promise","Purchase","Quote"},
+            {"Rates","Refinance","Refund"},
+            {"Remove","Request","Risk-free"},
+            {"Sales","Satisfaction","Save"},
+            {"Score","Serious","Spam"},
+            {"Success","Supplies","Take action"},
+            {"Terms","Traffic","Trial"},
+            {"Unlimited","Urgent","Weight"},
+            {"While","supplies last","Win"}};
+
     private Connection connection;
 
     public DatabaseManager(Connection connection) {
@@ -17,7 +51,8 @@ public class DatabaseManager {
                     ",password varchar(55),dateTime timestamp,firstName varchar(55),lastName varchar(55),gender int,address varchar(55)" +
                     ",securityQuestion varchar(70),securityQuestionAnswer varchar(55),birth_date varchar(55),phoneNumber varchar(55))");
             statement.execute("CREATE TABLE IF NOT EXISTS mail (id int primary key unique auto_increment,recipient_id int,subject varchar(100)" +
-                    ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean,draft int,multiple_recipients varchar(55))");
+                    ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean," +
+                    "draft int,multiple_recipients varchar(55),spam boolean)");
         } catch (SQLException e) { e.printStackTrace(); }
     }
 
@@ -58,10 +93,9 @@ public class DatabaseManager {
     }
 
     public void addMail(MailBody mail){
-        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred,draft,multiple_recipients)VALUES(?,?,?,?,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO mail(recipient_id,subject,body,sender_id,status,recipient_starred,child_mail,permaTrash,sender_starred,draft,multiple_recipients,spam)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)";
         try {
             PreparedStatement ppStatement = connection.prepareStatement(query);
-            StringTokenizer recipients = new StringTokenizer(mail.getRecipient(), ",");
             if (mail.isDraft())   //Body to save mail as draft
             {
                 ppStatement.setInt(1, -1);
@@ -75,8 +109,14 @@ public class DatabaseManager {
                 ppStatement.setInt(8, -1); //Perma Trash -- Used for perma deleting mail
                 ppStatement.setString(2, mail.getSubject());
                 ppStatement.setString(3, mail.getText());
+                ppStatement.setBoolean(12,false);
+                ppStatement.execute();
             } else {  //Normal Mail to be sent to user(s)
+
+                StringTokenizer recipients = new StringTokenizer(mail.getRecipient(), ",");
+                System.out.println(recipients);
                 while (recipients.hasMoreTokens()) {
+                    System.out.println("Chali");
                     ppStatement.setInt(1, getId(recipients.nextToken()));
                     int status;
             /*
@@ -84,17 +124,15 @@ public class DatabaseManager {
             2-Read - Inbox   //The mail cannot be read until it isn't in unread form first
             3-Draft
             4-Trash
-            5-Spam
              */
                     if (mail.isUnread()) {
                         status = 1;
                     } else if (mail.isTrash()) {
                         status = 4;
-                    } else if (mail.isSpam()) {
-                        status = 5;
                     } else {
                         status = 2;
                     }
+                    ppStatement.setBoolean(12,checkSpam(mail.getText())); //To check whether mail is spam or not
                     ppStatement.setInt(5, status);
                     ppStatement.setInt(4, getId(mail.getSender()));
                     ppStatement.setBoolean(6, mail.isRecipient_starred());
@@ -104,9 +142,10 @@ public class DatabaseManager {
                     ppStatement.setInt(8, -1); //Perma Trash -- Used for perma deleting mail
                     ppStatement.setString(2, mail.getSubject());
                     ppStatement.setString(3, mail.getText());
+                    ppStatement.setString(11,mail.getRecipient());
+                    ppStatement.execute();
                 }
             }
-            ppStatement.execute();
         }catch(SQLException e)
         {
             e.printStackTrace();
@@ -171,7 +210,6 @@ public class DatabaseManager {
         } catch (SQLException e) { e.printStackTrace(); }
         return false;
     }
-
 
     public String getUserSecurityQuestion(int id) {
         String query = "SELECT * FROM user where id = ?";
@@ -459,6 +497,15 @@ public class DatabaseManager {
         ppsStatement.setString(1,password);
         ppsStatement.setString(2,username);
         ppsStatement.executeUpdate();
+    }
+
+    public boolean checkSpam(String body) {
+        for (String[] spamWord : spamWords) {
+            if (body.contains(spamWord[0]) && body.contains(spamWord[1]) && body.contains(spamWord[2])) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

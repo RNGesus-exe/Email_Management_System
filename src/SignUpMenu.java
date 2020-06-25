@@ -747,6 +747,10 @@ public class SignUpMenu extends JFrame {
         {
             JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "The entered username is already taken!", "Username Already Exists", JOptionPane.ERROR_MESSAGE);
         }
+        else if(Driver.dataAgent.checkPhoneNumberRepetition(phoneNoField.getText().trim()))
+        {
+            JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "The phone number has already been with an email!", "Phone Number Already In Use", JOptionPane.ERROR_MESSAGE);
+        }
         else {
             JOptionPane.showMessageDialog(SignUpMenu.super.rootPane, "Your Account has been Successfully made!", "Success!", JOptionPane.PLAIN_MESSAGE);
             uploadBioToDatabase();
