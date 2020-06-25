@@ -1,4 +1,5 @@
 import java.sql.Date;
+import java.sql.Timestamp;
 
 public class MailBody {
 
@@ -10,6 +11,7 @@ public class MailBody {
     private String text;
     private String subject;
     private Date dateTime;
+    private Timestamp timeStamp;
     private boolean recipient_starred;
     private boolean sender_starred;
     private boolean trash;
@@ -42,6 +44,13 @@ public class MailBody {
 
 //--------------------------------------------SETTERS/GETTERS------------------------------------------------------
 
+
+    public Timestamp getTimeStamp() {
+        return timeStamp;
+    }
+    public void setTimeStamp(Timestamp timeStamp) {
+        this.timeStamp = timeStamp;
+    }
 
     public int getDraft_user() {
         return draft_user;
