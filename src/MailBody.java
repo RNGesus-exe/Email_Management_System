@@ -44,6 +44,28 @@ public class MailBody {
 
 //--------------------------------------------SETTERS/GETTERS------------------------------------------------------
 
+    public void changeRecipientStarred() {
+        if(isRecipient_starred())
+        {
+            setRecipient_starred(false);
+        }
+        else
+        {
+            setRecipient_starred(true);
+        }
+    }
+
+    public void changeSenderStarred() {
+        if(isSender_starred())
+        {
+            setSender_starred(false);
+        }
+        else
+        {
+            setSender_starred(true);
+        }
+    }
+
 
     public Timestamp getTimeStamp() {
         return timeStamp;

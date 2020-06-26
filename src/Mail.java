@@ -101,7 +101,7 @@ public class Mail {
     public int getAmountOfStarredMails() {
         int count = 0;
         for (MailBody mailBody : mails) {
-            if (mailBody.isRecipient_starred() || mailBody.isSender_starred()) { count++; }
+            if (mailBody.isRecipient_starred()) { count++; }
         } return count;
     }
     public int getAmountOfTrashMails() {
@@ -125,7 +125,7 @@ public class Mail {
         ArrayList<MailBody> inbox = new ArrayList<>();
         for(MailBody mailbody: mails)
         {
-            if(!mailbody.isSpam())
+            if(!mailbody.isSpam() && (mailbody.getPermaTrash()!=getUser().getId()))
             {
                 inbox.add(mailbody);
             }
@@ -137,8 +137,17 @@ public class Mail {
     public ArrayList<MailBody> getStarred() {
         ArrayList<MailBody> starred = new ArrayList<MailBody>();
         for (MailBody mailbody: mails) {
-            if (mailbody.isRecipient_starred() || mailbody.isSender_starred()) { starred.add(mailbody); }
-        } return starred;
+            if (mailbody.isRecipient_starred()) {
+                starred.add(mailbody);
+            }
+        }
+        for (MailBody mailbody: sent) {
+            if (mailbody.isSender_starred()) {
+                starred.add(mailbody);
+            }
+        }
+
+        return starred;
     }
     public ArrayList<MailBody> getTrash() {
         ArrayList<MailBody> trash = new ArrayList<MailBody>();
@@ -169,4 +178,6 @@ public class Mail {
         }
         return temp;
     }
+
+
 }

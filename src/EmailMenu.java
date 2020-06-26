@@ -2,12 +2,26 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableCellRenderer;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class EmailMenu extends JFrame implements ActionListener, KeyListener{
+public class EmailMenu extends JFrame implements ActionListener{
+
+    private int button_id;
+    /**
+     1) Inbox
+     2) Starred
+     3) Draft
+     4) Spam
+     5) All Mail
+     6) Trash
+     7) Sent
+     */
 
     private JPanel titleBar;
     private JPanel mainBody;
@@ -32,6 +46,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
     private JButton btn_Trash;
     private JButton btn_GoBack;
     private JButton btn_Reply;
+    JButton button = new JButton();  //Used in JTable
 
     private JScrollPane jScrollPane;
     private JTable jTable;
@@ -182,13 +197,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
         btn_Compose.setForeground(new Color(243, 241, 239));
         btn_Compose.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Compose.setFont(font);
-        btn_Compose.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                new ComposeMail();
-                //                       /\ <-- Driver.mail.getUser().getUsername()
-            }
-        });
+        btn_Compose.addActionListener(e -> new ComposeMail());
 
 //==========================================> INBOX BUTTON <============================================================
 
@@ -354,11 +363,11 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                     /**
                      * Set unread to false.
                      **/
-                    jTableDataFunction(null);
-                    jTable.setVisible(false);
-                    jTablePanel.setVisible(false);
-                    jShowMailPanel.setVisible(true);
-                    mainBody.updateUI();
+//                    jTableDataFunction(null);
+//                    jTable.setVisible(false);
+//                    jTablePanel.setVisible(false);
+//                    jShowMailPanel.setVisible(true);
+//                    mainBody.updateUI();
                 }
             }
         });
@@ -436,19 +445,76 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             mails[i][1] = dataValues.get(i).getSubject();
             mails[i][2] = dataValues.get(i).getDateTime().toString();
         }
+        button_id = 1;
 
         jTableDataFunction(mails);
 
-        //jTable.getColumn("Star").setCellRenderer(new HelperClasses.ButtonRenderer());
-        //jTable.getColumn("Star").setCellEditor(new HelperClasses.ButtonEditor(new JCheckBox()));
-        //jTable.getColumn("Trash").setCellRenderer(new HelperClasses.ButtonRenderer());
-        //jTable.getColumn("Trash").setCellEditor(new HelperClasses.ButtonEditor(new JCheckBox()));
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if(jTable.getSelectedColumn() == 3) {
+                    switch(button_id) {
+                        case 1:
+                            Driver.mail.getInbox().get(jTable.getSelectedRow()).setRecipient_starred(true);
+                            break;
+                        case 2:
+                            System.out.println(jTable.getSelectedRow());
+                            Driver.mail.getStarred().get(jTable.getSelectedRow()).setRecipient_starred(false);
+                            break;
+                        case 3:
+                            Driver.mail.getDraft().get(jTable.getSelectedRow()).setRecipient_starred(true);
+                            break;
+                        case 4:
+                            Driver.mail.getSpam().get(jTable.getSelectedRow()).setRecipient_starred(true);
+                            break;
+                        case 5:
+                            Driver.mail.getAllMails().get(jTable.getSelectedRow()).setRecipient_starred(true);
+                            break;
+                        case 6:
+                            Driver.mail.getTrash().get(jTable.getSelectedRow()).setRecipient_starred(true);
+                            break;
+                        case  7:
+                            Driver.mail.getSent().get(jTable.getSelectedRow()).setSender_starred(true);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+                else if(jTable.getSelectedColumn()==4){
+                    switch(button_id) {
+                        case 1:
+                            Driver.mail.getInbox().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case 2:
+                            Driver.mail.getStarred().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case 3:
+                            Driver.mail.getDraft().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case 4:
+                            Driver.mail.getSpam().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case 5:
+                            Driver.mail.getAllMails().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case 6:    //Permanent Delete
+                            Driver.mail.getTrash().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        case  7:
+                            Driver.mail.getSent().get(jTable.getSelectedRow()).setTrash(true);
+                            break;
+                        default:
+                            JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
 
     }
 
     private void jTableDataFunction(String[][] emails) {
         //-- JTable Data
-        model = new DefaultTableModel(emails, new String[]{"Sender", "Subject", "Date", "Star", "Del"}) {
+        model = new DefaultTableModel(emails, new String[]{"Sender", "Subject", "Date", "Star", "Trash"}) {
 
             Class[] types = new Class[]{String.class, String.class, String.class, Object.class, Object.class};
             boolean[] canEdit = new boolean[]{false, false, false, false, false};
@@ -458,11 +524,18 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             }
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
-                return canEdit[columnIndex];
+
+                return columnIndex==3 || columnIndex==4;
             }
         };
 
+
         jTable.setModel(model);
+
+        jTable.getColumn("Star").setCellRenderer(new ButtonRenderer());
+        jTable.getColumn("Star").setCellEditor(new ButtonEditor(new JCheckBox()));
+        jTable.getColumn("Trash").setCellRenderer(new ButtonRenderer());
+        jTable.getColumn("Trash").setCellEditor(new ButtonEditor(new JCheckBox()));
 
         //-- JTable Properties
         if (jTable.getColumnModel().getColumnCount() > 0) {
@@ -479,7 +552,59 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             jTable.getColumnModel().getColumn(4).setPreferredWidth(70);
             jTable.getColumnModel().getColumn(4).setMaxWidth(70);
         }
+
         jTable.setRowHeight(25);
+    }
+//=========================================>  JTable Button Helper Functions <==========================================
+
+    static class ButtonRenderer extends JButton implements TableCellRenderer {
+        public ButtonRenderer() {
+            setOpaque(true);
+        }
+
+        public Component getTableCellRendererComponent(JTable table, Object value,
+                                                       boolean isSelected, boolean hasFocus, int row, int column) {
+            if(column==3)
+            {
+                ImageIcon img_icon =  new ImageIcon("Icons/Starred.png");
+                Image img = img_icon.getImage();
+                img = img.getScaledInstance(30,25,Image.SCALE_SMOOTH);
+                img_icon = new ImageIcon(img);
+                setIcon(img_icon);
+                setBackground(new Color(255, 255, 255));
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            else if(column == 4)
+            {
+                ImageIcon img_icon =  new ImageIcon("Icons/Trash.png");
+                Image img = img_icon.getImage();
+                img = img.getScaledInstance(30,25,Image.SCALE_SMOOTH);
+                img_icon = new ImageIcon(img);
+                setIcon(img_icon);
+                setBackground(new Color(255,255,255));
+                setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+            }
+            return this;
+        }
+    }
+
+    class ButtonEditor extends DefaultCellEditor {
+
+        private String label = null;
+
+        public ButtonEditor(JCheckBox checkBox) {
+            super(checkBox);
+        }
+
+        public Component getTableCellEditorComponent(JTable table, Object value,
+                                                     boolean isSelected, int row, int column) {
+            button.setText(label);
+            return button;
+        }
+
+        public Object getCellEditorValue() {
+            return label;
+        }
     }
 
     private void jTableCoordinatesFunction() {
@@ -519,6 +644,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
             ex.printStackTrace();
         }
         if (e.getSource() == btn_Inbox) {
+            button_id = 1;
             dataValues = Driver.mail.getInbox();
             mails = new String[dataValues.size()][5];
             for(int i = 0; i < dataValues.size() ; i++) {
@@ -532,6 +658,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Starred) {
+            button_id = 2;
             dataValues = Driver.mail.getStarred();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -540,6 +667,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Sent) {
+            button_id = 7;
             dataValues = Driver.mail.getSent();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -548,6 +676,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Draft) {
+            button_id = 3;
             dataValues = Driver.mail.getDraft();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -556,6 +685,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_AllMail) {
+            button_id = 5;
             dataValues = Driver.mail.getAllMails();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -564,6 +694,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Spam) {
+            button_id = 4;
             dataValues = Driver.mail.getSpam();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -572,6 +703,7 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Trash) {
+            button_id = 6;
             dataValues = Driver.mail.getTrash();
             mails = new String[dataValues.size()][5];
             for(int i=0;i<dataValues.size() ;i++) {
@@ -579,81 +711,10 @@ public class EmailMenu extends JFrame implements ActionListener, KeyListener{
                 mails[i][1] = dataValues.get(i).getSubject();
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
-
         } else {
             JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
         }
         model.fireTableDataChanged();
         jTableDataFunction(mails);
     }
-
-//==========================================> KEY LISTENER <============================================================
-
-    @Override
-    public void keyTyped(KeyEvent e) { }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-            ArrayList<MailBody> dataValues = new ArrayList<>();
-            String [][] mails = null;
-            if (e.getSource() == btn_Inbox) {
-                dataValues = Driver.mail.getInbox();
-                mails = new String[dataValues.size()][5];
-                for(int i=0;i<dataValues.size() ;i++) {
-                    mails[i][0] = dataValues.get(i).getSender();
-                    mails[i][1] = dataValues.get(i).getSubject();
-                    mails[i][2] = dataValues.get(i).getDateTime().toString();
-                }
-            } else if (e.getSource() == btn_Starred) {
-                dataValues = Driver.mail.getStarred();
-                mails = new String[dataValues.size()][5];
-                for(int i=0;i<dataValues.size() ;i++) {
-                    mails[i][0] = dataValues.get(i).getSender();
-                    mails[i][1] = dataValues.get(i).getSubject();
-                    mails[i][2] = dataValues.get(i).getDateTime().toString();
-                }
-            } else if (e.getSource() == btn_Sent) {
-                dataValues = Driver.mail.getSent();
-                mails = new String[dataValues.size()][5];
-                for(int i=0;i<dataValues.size() ;i++) {
-                    mails[i][0] = dataValues.get(i).getSender();
-                    mails[i][1] = dataValues.get(i).getSubject();
-                    mails[i][2] = dataValues.get(i).getDateTime().toString();
-                }
-            } else if (e.getSource() == btn_Draft) {
-                dataValues = Driver.mail.getDraft();
-                mails = new String[dataValues.size()][5];
-                for(int i=0;i<dataValues.size() ;i++) {
-                    mails[i][0] = dataValues.get(i).getSender();
-                    mails[i][1] = dataValues.get(i).getSubject();
-                    mails[i][2] = dataValues.get(i).getDateTime().toString();
-                }
-            } else if (e.getSource() == btn_AllMail) {
-                //-------------TO BE MADE
-            } else if (e.getSource() == btn_Spam) {
-                //--------------TO BE MADE
-            } else if (e.getSource() == btn_Trash) {
-                dataValues = Driver.mail.getTrash();
-                mails = new String[dataValues.size()][5];
-                for(int i=0;i<dataValues.size() ;i++) {
-                    mails[i][0] = dataValues.get(i).getSender();
-                    mails[i][1] = dataValues.get(i).getSubject();
-                    mails[i][2] = dataValues.get(i).getDateTime().toString();
-                }
-            } else {
-                JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
-            }
-            model.fireTableDataChanged();
-            jTableDataFunction(mails);
-        }
-        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-            if (JOptionPane.showConfirmDialog (EmailMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                dispose();
-            }
-        }
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) { }
 }

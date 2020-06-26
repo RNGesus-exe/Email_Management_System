@@ -210,7 +210,7 @@ public class AboutUser extends JFrame {
          **/
 
         accountDOBLabel = new JLabel("Account Created on Date : "+Driver.mail.getUser().getDateTime());
-        accountDOBLabel.setBounds(50, 200, 400, 20);
+        accountDOBLabel.setBounds(50, 200, 600, 20);
         accountDOBLabel.setForeground(new Color(243, 241, 239));
         accountDOBLabel.setFont(font);
 
@@ -383,7 +383,6 @@ public class AboutUser extends JFrame {
                 Driver.mail.getUser().setSecurityQuestion((String) securityQsBox.getSelectedItem());
                 Driver.mail.getUser().setSecurityQuestionAnswer(securityAnsField.getText().trim());
                 Driver.mail.getUser().setAddress(addressTextArea.getText().trim());
-                Driver.mail.getUser().setPassword(passwordField.getText().trim());
                 Driver.mail.updateUserdata(Driver.mail.getUser().getId());
                 optionEditor(false);
             }

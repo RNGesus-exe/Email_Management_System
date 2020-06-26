@@ -448,10 +448,15 @@ public class DatabaseManager {
         ppsStatement.executeQuery();
     }
 
-    public void deleteMail(int mail_id) throws SQLException {
-        PreparedStatement ppsStatement = connection.prepareStatement("DELETE from mail where id = ? ");
-        ppsStatement.setInt(1, mail_id);
-        ppsStatement.executeUpdate();
+    public void deleteMail(int mail_id){
+        try {
+            PreparedStatement ppsStatement = connection.prepareStatement("DELETE from mail where id = ? ");
+            ppsStatement.setInt(1, mail_id);
+            ppsStatement.executeUpdate();
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     public void updateUserDataBase(int id){
