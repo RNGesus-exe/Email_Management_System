@@ -250,7 +250,6 @@ public class ComposeMail extends JFrame {
         btn_Discard.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Discard.setToolTipText("Discards Mail");
         btn_Discard.setFont(font);
-
         btn_Discard.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -269,7 +268,6 @@ public class ComposeMail extends JFrame {
         btn_Draft.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Draft.setToolTipText("Drafts Mail");
         btn_Draft.setFont(font);
-
         btn_Draft.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -295,7 +293,6 @@ public class ComposeMail extends JFrame {
         btn_Send.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Send.setToolTipText("Send Mail");
         btn_Send.setFont(font);
-
         btn_Send.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
