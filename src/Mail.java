@@ -15,6 +15,22 @@ public class Mail {
     public Mail() {
     }
 
+    public ArrayList<MailBody> getMails() {
+        return mails;
+    }
+
+    public int getIndexOfMail(MailBody mail) {
+        for(int i=0;i<mails.size();i++)
+        {
+            if(mails.get(i).equals(mail))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+
     public void setDraft(ArrayList<MailBody> draft) {
         this.draft = draft;
     }

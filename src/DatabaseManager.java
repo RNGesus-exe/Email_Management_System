@@ -36,7 +36,8 @@ public class DatabaseManager {
             {"Success", "Supplies", "Take action"},
             {"Terms", "Traffic", "Trial"},
             {"Unlimited", "Urgent", "Weight"},
-            {"While", "supplies last", "Win"}
+            {"While", "supplies last", "Win"},
+            {"25 din","ma","paisa double"}
     };
 
     private Connection connection;
@@ -49,11 +50,12 @@ public class DatabaseManager {
         try {
             Statement statement = connection.createStatement();
             statement.execute("CREATE TABLE IF NOT EXISTS user (id int primary key unique auto_increment,username varchar(55)" +
-                    ",password varchar(55),dateTime timestamp,firstName varchar(55),lastName varchar(55),gender int,address varchar(55)" +
+                    ",password varchar(55),dateTime timestamp,firstName varchar(55),lastName varchar(55),gender int,address varchar(200)" +
                     ",securityQuestion varchar(70),securityQuestionAnswer varchar(55),birth_date varchar(55),phoneNumber varchar(55))");
             statement.execute("CREATE TABLE IF NOT EXISTS mail (id int primary key unique auto_increment,recipient_id int,subject varchar(100)" +
                     ",body mediumtext,sender_id int,status int,recipient_starred boolean,dateTime timestamp,child_mail int,permaTrash int,sender_starred boolean," +
                     "draft int,multiple_recipients varchar(55),spam boolean)");
+            statement.execute("CREATE TABLE IF NOT EXISTS groups (id int primary key unique auto_increment,groupName varchar(55),members mediumtext,description mediumtext,user_id int)");
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -400,7 +402,7 @@ public class DatabaseManager {
         while (rs.next()) {
             MailBody sentMail = new MailBody();
             sentMail.setId(rs.getInt(1));
-            sentMail.setRecipient(getUsername(rs.getInt(5)));
+            sentMail.setRecipient("Me");
             sentMail.setSubject(rs.getString(3));
             sentMail.setText(rs.getString(4));
             sentMail.setSender(getUsername(id));
