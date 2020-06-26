@@ -35,16 +35,15 @@ public class ShowEmail extends JFrame implements ActionListener{
     private Image img;
     private Font font;
     private Boolean flag = false;
-    private short mailType = -1;
+    private short mailType = 0;
     /**
-     * -1 : Nothing
-     *  0 : Inbox
-     *  1 : Starred
-     *  2 : Sent
-     *  3 : Draft
-     *  4 : All
-     *  5 : Spam
-     *  6 : Trash
+     * 1 : Inbox
+     * 2 : Starred
+     * 3 : Draft
+     * 4 : Spam
+     * 5 : All
+     * 6 : Trash
+     * 7 : Sent
      **/
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
@@ -145,7 +144,11 @@ public class ShowEmail extends JFrame implements ActionListener{
 
 //==========================================> REPLY MAIL BUTTON <=======================================================
 
-        btn_ReplyMail = new JButton("Reply Mail");
+        if (mailType == 3) {
+            btn_ReplyMail = new JButton("Save Mail");
+        } else {
+            btn_ReplyMail = new JButton("Reply Mail");
+        }
         btn_ReplyMail.setBounds(125, 490, 100, 30);
         btn_ReplyMail.setBackground(new Color(25, 181, 254));
         btn_ReplyMail.setForeground(new Color(243, 241, 239));
@@ -156,7 +159,7 @@ public class ShowEmail extends JFrame implements ActionListener{
 
 //==========================================> STAR MAIL BUTTON <========================================================
 
-        if (mailType == 1) {
+        if (mailType == 2) {
             btn_StarMail = new JButton("Un-Star Mail");
         } else {
             btn_StarMail = new JButton("Star Mail");
@@ -182,7 +185,11 @@ public class ShowEmail extends JFrame implements ActionListener{
 
 //==========================================> FORWARD MAIL BUTTON <=====================================================
 
-        btn_ForwardMail = new JButton("Forward Mail");
+        if (mailType == 3) {
+            btn_ForwardMail = new JButton("Send Mail");
+        } else {
+            btn_ForwardMail = new JButton("Forward Mail");
+        }
         btn_ForwardMail.setBounds(500, 490, 100, 30);
         btn_ForwardMail.setBackground(new Color(38, 166, 91));
         btn_ForwardMail.setForeground(new Color(243, 241, 239));
@@ -204,6 +211,7 @@ public class ShowEmail extends JFrame implements ActionListener{
         textArea.setForeground(new Color(243, 241, 239));
         textArea.setCaretColor(Color.white);
         textArea.setLineWrap(true);
+        textArea.setEditable(false);
         textArea.setFont(font);
         JScrollPane scrollPane = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
         textPane.add(scrollPane);
@@ -233,37 +241,52 @@ public class ShowEmail extends JFrame implements ActionListener{
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        /**
+         * 1 : Inbox
+         * 2 : Starred
+         * 3 : Draft
+         * 4 : Spam
+         * 5 : All
+         * 6 : Trash
+         * 7 : Sent
+         **/
+
         if (e.getSource() == btn_Return) {
             dispose();
         } else if (e.getSource() == btn_ReplyMail) {
-            if (flag) {
-                frame.dispose();
+            if (mailType == 3) {
+                textArea.setEditable(true);
+            } else {
+                flag = true;
+                replyMailFunction();
             }
-            replyMailFunction();
-
         } else if (e.getSource() == btn_StarMail) {
-            if (mailType == 0 || mailType == 2 || mailType == 3 || mailType == 4 || mailType == 5) {
-                //-- Star Mail
-            } else if (mailType == 1) {
+            if (mailType == 2) {
                 //-- UnStar Mail
             } else {
-                JOptionPane.showMessageDialog(ShowEmail.this, "IDK how you did but please teach me also.", "Illegal Operation", JOptionPane.ERROR_MESSAGE, null);
+                //-- Star Mail
             }
         } else if (e.getSource() == btn_DeleteMail) {
-            if (mailType == 0 || mailType == 1 || mailType == 2 || mailType == 3 || mailType == 4) {
-                //-- Delete Mail
-            } else if (mailType == 5) {
+            if (mailType == 6) {
                 //-- Perma Delete Mail
             } else {
-                JOptionPane.showMessageDialog(ShowEmail.this, "IDK how you did but please teach me also.", "Illegal Operation", JOptionPane.ERROR_MESSAGE, null);
+                //-- Delete Mail
+            }
+        } else if (e.getSource() == btn_ForwardMail) {
+            if (mailType == 3) {
+                textArea.setEditable(false);
+                //-- Save Mail
+            } else if (mailType == 3) {
+                new ComposeMail();
             }
         }
+        mainBody.updateUI();
+
     }
 
     private void replyMailFunction() {
 
         frame  = new JFrame();
-        flag = true;
 
         JPanel frameTitleBar;
         JPanel frameMainBody;
@@ -418,6 +441,11 @@ public class ShowEmail extends JFrame implements ActionListener{
         frameMainBody.add(btn_frameDraftMail);
         frameMainBody.add(btn_frameSendMail);
         frameMainBody.add(btn_frameDiscard);
+
+        if (flag) {
+            flag = false;
+            frame.dispose();
+        }
 
         frame.add(frameTitleBar);
         frame.add(frameMainBody);

@@ -363,6 +363,7 @@ public class EmailMenu extends JFrame implements ActionListener{
                     /**
                      * Set unread to false.
                      **/
+                    new ShowEmail((short)button_id);
 //                    jTableDataFunction(null);
 //                    jTable.setVisible(false);
 //                    jTablePanel.setVisible(false);
