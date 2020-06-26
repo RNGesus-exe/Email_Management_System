@@ -44,21 +44,16 @@ public class EmailMenu extends JFrame implements ActionListener{
     private JButton btn_AllMail;
     private JButton btn_Spam;
     private JButton btn_Trash;
-    private JButton btn_GoBack;
-    private JButton btn_Reply;
-    JButton button = new JButton();  //Used in JTable
+    private JButton button = new JButton();  //Used in JTable
+    private JButton btn_Group;
 
     private JScrollPane jScrollPane;
     private JTable jTable;
     private JPanel jTablePanel;
-    private JPanel jShowMailPanel;
     private TableCellRenderer tableRenderer;
     private DefaultTableModel model;
 
-    private JTextArea textArea;
-    private static String email = "";
-
-    private int y_Axis = 200;
+    private int y_Axis = 150;
     private Font font;
 
     public EmailMenu() {
@@ -186,6 +181,19 @@ public class EmailMenu extends JFrame implements ActionListener{
             }
             Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
         });
+//==========================================> Group Button <============================================================
+
+        font = new Font("Arial", Font.BOLD, 14);
+
+        btn_Group = new JButton("Groups");
+        btn_Group.setBounds(100, 150, 100, 30);
+        btn_Group.setBackground(new Color(34, 167, 240));
+        btn_Group.setForeground(new Color(243, 241, 239));
+        btn_Group.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_Group.setToolTipText("Create/Edit/Delete Groups");
+        btn_Group.setFont(font);
+        btn_Group.addActionListener(e -> new Groups());
+
 
 //==========================================> COMPOSE BUTTON <==========================================================
 
@@ -276,30 +284,9 @@ public class EmailMenu extends JFrame implements ActionListener{
         btn_Trash.setFont(font);
         btn_Trash.addActionListener(this);
 
-//==========================================> GO BACK BUTTON <==========================================================
-
-        btn_GoBack = new JButton("Go Back");
-        btn_GoBack.setBounds(0, 0, 100, 30);
-        btn_GoBack.setBackground(new Color(242, 38, 19));
-        btn_GoBack.setForeground(new Color(243, 241, 239));
-        btn_GoBack.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_GoBack.setToolTipText("Goes back to Mails");
-        btn_GoBack.setFont(font);
-        btn_GoBack.addActionListener(this);
-
-//==========================================> REPLY BUTTON <============================================================
-
-        btn_Reply = new JButton("Reply");
-        btn_Reply.setBounds(125, 0, 100, 30);
-        btn_Reply.setBackground(new Color(34, 167, 240));
-        btn_Reply.setForeground(new Color(243, 241, 239));
-        btn_Reply.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Reply.setToolTipText("Replies to selected Emails");
-        btn_Reply.setFont(font);
-        btn_Reply.addActionListener(this);
-
 //==========================================> ADDING ICONS <============================================================
 
+        addIcons("Icons/Group_Icon.png");
         addIcons("Icons/Compose.png");
         addIcons("Icons/Inbox.png");
         addIcons("Icons/Starred.png");
@@ -316,36 +303,6 @@ public class EmailMenu extends JFrame implements ActionListener{
         jTablePanel.setBackground(new Color(52, 73, 94));
         jTablePanel.setLayout(new BorderLayout());
 
-//==========================================> J-TEXT AREA EMAIL DISPLAY <===============================================
-
-        textArea = new JTextArea();
-        textArea.setBounds(0, 50, 950, 450);
-        textArea.setBackground(new Color(243, 241, 239));
-        textArea.setForeground(new Color(0, 0, 0));
-        textArea.setCaretColor(Color.white);
-        textArea.setEditable(false);
-        textArea.setLineWrap(true);
-        textArea.setFont(new Font("Arial", Font.BOLD, 15));
-
-        JScrollPane scrollBar = new JScrollPane(textArea, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-
-//==========================================> J-PANEL SHOW EMAIL <======================================================
-
-        jShowMailPanel = new JPanel();
-        jShowMailPanel.setBounds(225, 125, 950, 500);
-        jShowMailPanel.setBackground(new Color(52, 73, 94));
-        jShowMailPanel.setLayout(new BorderLayout());
-        jShowMailPanel.setVisible(false);
-        jShowMailPanel.add(textArea);
-
-//==========================================> ADD EMAIL TO TEXT AREA HERE <=============================================
-
-        String mail = "  Sender : _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \t\t\t\t" + "  Date      : _ _ / _ _ / _ _ _ _ \n" +
-                "  Subject: _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
-                "   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
-                "   _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ \n" +
-                " \n\n <=========================================================================================================>\n\n";/*--------------------------*/
-        addMail(mail);
 
 //==========================================> J-TABLE EMAIL DISPLAY <===================================================
 
@@ -391,12 +348,9 @@ public class EmailMenu extends JFrame implements ActionListener{
         mainBody.add(btn_AllMail);
         mainBody.add(btn_Spam);
         mainBody.add(btn_Trash);
+        mainBody.add(btn_Group);
 
-        jShowMailPanel.add(btn_GoBack);
-        jShowMailPanel.add(btn_Reply);
-        jShowMailPanel.add(textArea);
         mainBody.add(jTablePanel);
-        mainBody.add(jShowMailPanel);
 
         add(titleBar);
         add(mainBody);
@@ -450,63 +404,59 @@ public class EmailMenu extends JFrame implements ActionListener{
 
         jTableDataFunction(mails);
 
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if(jTable.getSelectedColumn() == 3) {
-                    switch(button_id) {
-                        case 1:
-                            Driver.mail.getInbox().get(jTable.getSelectedRow()).setRecipient_starred(true);
-                            break;
-                        case 2:
-                            System.out.println(jTable.getSelectedRow());
-                            Driver.mail.getStarred().get(jTable.getSelectedRow()).setRecipient_starred(false);
-                            break;
-                        case 3:
-                            Driver.mail.getDraft().get(jTable.getSelectedRow()).setRecipient_starred(true);
-                            break;
-                        case 4:
-                            Driver.mail.getSpam().get(jTable.getSelectedRow()).setRecipient_starred(true);
-                            break;
-                        case 5:
-                            Driver.mail.getAllMails().get(jTable.getSelectedRow()).setRecipient_starred(true);
-                            break;
-                        case 6:
-                            Driver.mail.getTrash().get(jTable.getSelectedRow()).setRecipient_starred(true);
-                            break;
-                        case  7:
-                            Driver.mail.getSent().get(jTable.getSelectedRow()).setSender_starred(true);
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
-                    }
+        button.addActionListener(e -> {
+            if(jTable.getSelectedColumn() == 3) {
+                switch(button_id) {
+                    case 1:
+                        Driver.mail.getMails().get(Driver.mail.getIndexOfMail(Driver.mail.getInbox().get(jTable.getSelectedRow()))).changeRecipientStarred();
+                        break;
+                    case 2:
+                        Driver.mail.getMails().get(Driver.mail.getIndexOfMail(Driver.mail.getStarred().get(jTable.getSelectedRow()))).changeRecipientStarred();
+                        break;
+                    case 3:
+                        Driver.mail.getDraft().get(jTable.getSelectedRow()).changeRecipientStarred();
+                        break;
+                    case 4:
+                        Driver.mail.getMails().get(Driver.mail.getIndexOfMail(Driver.mail.getSpam().get(jTable.getSelectedRow()))).changeRecipientStarred();
+                        break;
+                    case 5:
+                        Driver.mail.getMails().get(Driver.mail.getIndexOfMail(Driver.mail.getAllMails().get(jTable.getSelectedRow()))).changeRecipientStarred();
+                        break;
+                    case 6:
+                        Driver.mail.getMails().get(Driver.mail.getIndexOfMail(Driver.mail.getTrash().get(jTable.getSelectedRow()))).changeRecipientStarred();
+                        break;
+                    case  7:
+                        Driver.mail.getSent().get(jTable.getSelectedRow()).changeSenderStarred();
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
                 }
-                else if(jTable.getSelectedColumn()==4){
-                    switch(button_id) {
-                        case 1:
-                            Driver.mail.getInbox().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case 2:
-                            Driver.mail.getStarred().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case 3:
-                            Driver.mail.getDraft().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case 4:
-                            Driver.mail.getSpam().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case 5:
-                            Driver.mail.getAllMails().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case 6:    //Permanent Delete
-                            Driver.mail.getTrash().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        case  7:
-                            Driver.mail.getSent().get(jTable.getSelectedRow()).setTrash(true);
-                            break;
-                        default:
-                            JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
-                    }
+            }
+            else if(jTable.getSelectedColumn()==4){
+                switch(button_id) {
+                    case 1:
+                        Driver.mail.getInbox().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case 2:
+                        Driver.mail.getStarred().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case 3:
+                        Driver.mail.getDraft().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case 4:
+                        Driver.mail.getSpam().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case 5:
+                        Driver.mail.getAllMails().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case 6:    //Permanent Delete
+                        Driver.mail.getTrash().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    case  7:
+                        Driver.mail.getSent().get(jTable.getSelectedRow()).setTrash(true);
+                        break;
+                    default:
+                        JOptionPane.showMessageDialog(null, "If you see this message then your program is most likely screwed up", "Bhai asay mazak nahi mera", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
@@ -628,13 +578,6 @@ public class EmailMenu extends JFrame implements ActionListener{
         );
     }
 
-//==========================================> FUNCTION TO CREATE TABLE <================================================
-
-    public void addMail(String mail) {
-        email += mail;
-        textArea.setText(email);
-    }
-
 //==========================================> ACTION LISTENER <=========================================================
 
     @Override
@@ -666,6 +609,7 @@ public class EmailMenu extends JFrame implements ActionListener{
                 mails[i][0] = dataValues.get(i).getSender();
                 mails[i][1] = dataValues.get(i).getSubject();
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
+                System.out.println(mails[i][0]+":"+mails[i][1]+":"+mails[i][2]);
             }
         } else if (e.getSource() == btn_Sent) {
             button_id = 7;

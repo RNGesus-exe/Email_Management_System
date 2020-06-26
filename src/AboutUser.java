@@ -59,11 +59,11 @@ public class AboutUser extends JFrame {
 
 //==========================================> MAIN J-FRAME <============================================================
 
-        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
         setBounds(250, 75, 900, 650);
         this.setUndecorated(true);
         setShape(new RoundRectangle2D.Double(0, 0, 900, 650, 30, 30));
         setLayout(null);
+        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 
 //==========================================> J-PANEL TITLE BAR <=======================================================
 
@@ -114,7 +114,7 @@ public class AboutUser extends JFrame {
         closeLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                System.exit(0);
+                dispose();
             }
         });
 
