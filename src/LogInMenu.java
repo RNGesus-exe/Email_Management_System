@@ -10,8 +10,7 @@ import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
 
-/** GOTO SECURITY QUESTION CHECK AND CALL THE RESPECTIVE FUNCTIONS*/
-public class LogInMenu extends JFrame {
+public class LogInMenu extends JFrame implements ActionListener, KeyListener {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
@@ -23,7 +22,6 @@ public class LogInMenu extends JFrame {
     private JLabel minusLabel;
 
     private JLabel mainLabel;
-    private JLabel infoLabel;
     private JLabel signUpLabel;
     private JLabel signUpsLink;
 
@@ -41,7 +39,7 @@ public class LogInMenu extends JFrame {
     private Map attributes;
     private Boolean flag = false;
 
-    private ImageIcon background;
+    private ImageIcon icon;
     private Image img;
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
@@ -66,18 +64,17 @@ public class LogInMenu extends JFrame {
         super.addMouseListener(frameDragListener);
         super.addMouseMotionListener(frameDragListener);
 
-        ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
-        setIconImage(icon.getImage());
-
 //==========================================> J-PANEL MAIN ICON <=======================================================
 
-        background = new ImageIcon("Icons/Main_Logo.png");
-        img = background.getImage();
-        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
-        background = new ImageIcon(img);
+        this.icon = new ImageIcon("Icons/Main_Logo.png");
+        setIconImage(icon.getImage());
 
-        JLabel mainIcon = new JLabel(background);
-        mainIcon.setBounds(05,05,40,40);
+        img = this.icon.getImage();
+        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
+        this.icon = new ImageIcon(img);
+
+        JLabel mainIcon = new JLabel(this.icon);
+        mainIcon.setBounds(5,5,40,40);
         mainIcon.setLayout(null);
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
@@ -99,7 +96,6 @@ public class LogInMenu extends JFrame {
         closeLabel.setBounds(475, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
         closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
-
         closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.setToolTipText("Close");
         closeLabel.addMouseListener(new MouseAdapter() {
@@ -115,7 +111,6 @@ public class LogInMenu extends JFrame {
         minusLabel.setBounds(450, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
         minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
-
         minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
         minusLabel.addMouseListener(new MouseAdapter() {
@@ -150,7 +145,7 @@ public class LogInMenu extends JFrame {
 
 //==========================================> USERNAME TEXT FIELD <=====================================================
 
-        font = new Font("Arial", Font.PLAIN, 16);
+        font = new Font("Arial", Font.BOLD, 16);
 
         usernameField = new JTextField();
         usernameField.setBounds(175, 110, 250, 20);
@@ -159,22 +154,7 @@ public class LogInMenu extends JFrame {
         usernameField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         usernameField.setCaretColor(Color.white);
         usernameField.setFont(font);
-        usernameField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        usernameField.addKeyListener(this);
 
 //==========================================> PASSWORD TEXT FIELD <=====================================================
 
@@ -185,62 +165,7 @@ public class LogInMenu extends JFrame {
         passwordField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         passwordField.setCaretColor(Color.white);
         passwordField.setFont(font);
-        passwordField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    try {
-                        logInCondition();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
-
-//==========================================> INFO LABEL <==============================================================
-
-        font = new Font("Arial", Font.BOLD, 14);
-        infoLabel = new JLabel("Learn More!");
-        infoLabel.setBounds(400, 10, 100, 20);
-        infoLabel.setForeground(new Color(34, 167, 240));
-        infoLabel.setToolTipText("Press this Text to Read the Information");
-        infoLabel.setFont(font);
-
-        attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        infoLabel.setFont(font.deriveFont(attributes));
-
-//==========================================> ABOUT SECTION <===========================================================
-
-        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        infoLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                JTextArea textArea = new JTextArea(15, 50);
-                textArea.setLineWrap(true);
-                textArea.setText("Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello");
-                textArea.setEditable(false);
-
-                JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(LogInMenu.super.rootPane, scrollPane, "About Us", -1, null);
-            }
-        });
+        passwordField.addKeyListener(this);
 
 //==========================================> SIGN UP LABEL / SIGN UP LINK <============================================
 
@@ -251,15 +176,12 @@ public class LogInMenu extends JFrame {
         signUpsLink = new JLabel("Sign Up!");
         signUpsLink.setBounds(365, 300, 70, 20);
         signUpsLink.setForeground(new Color(34, 167, 240));
-
-        font = new Font("Arial", Font.BOLD, 16);
         signUpLabel.setFont(font);
         signUpsLink.setFont(font);
 
         attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         signUpsLink.setFont(font.deriveFont(attributes));
-
         signUpsLink.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         signUpsLink.addMouseListener(new MouseAdapter() {
             @Override
@@ -276,35 +198,10 @@ public class LogInMenu extends JFrame {
         btn_Return.setBackground(new Color(242, 38, 19));
         btn_Return.setForeground(new Color(243, 241, 239));
         btn_Return.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_Return.setToolTipText("Press this button to Go Back");
+        btn_Return.setToolTipText("Click to Go Back");
         btn_Return.setFont(font);
-
-        btn_Return.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new MainMenu();
-            }
-        });
-        btn_Return.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    dispose();
-                    new MainMenu();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        btn_Return.addActionListener(this);
+        btn_Return.addKeyListener(this);
 
 //==========================================> LOG IN BUTTON <===========================================================
 
@@ -313,41 +210,10 @@ public class LogInMenu extends JFrame {
         btn_LogInn.setBackground(new Color(34, 167, 240));
         btn_LogInn.setForeground(new Color(243, 241, 239));
         btn_LogInn.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_LogInn.setToolTipText("This Button is Used to Log In to our E.M.S");
+        btn_LogInn.setToolTipText("Click to Log into E.M.S");
         btn_LogInn.setFont(font);
-
-        btn_LogInn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    logInCondition();
-                } catch (SQLException ex) {
-                    ex.printStackTrace();
-                }
-            }
-        });
-        btn_LogInn.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    try {
-                        logInCondition();
-                    } catch (SQLException ex) {
-                        ex.printStackTrace();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        btn_LogInn.addActionListener(this);
+        btn_LogInn.addKeyListener(this);
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
@@ -357,7 +223,6 @@ public class LogInMenu extends JFrame {
         titleBar.add(minusLabel);
 
         mainBody.add(mainLabel);
-        mainBody.add(infoLabel);
         mainBody.add(signUpLabel);
         mainBody.add(signUpsLink);
         mainBody.add(usernameLabel);
@@ -388,7 +253,6 @@ public class LogInMenu extends JFrame {
 
         font = new Font("Arial", Font.BOLD, 14);
         forgottenPassword.setFont(font);
-
         attributes = font.getAttributes();
         attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
         forgottenPassword.setFont(font.deriveFont(attributes));
@@ -409,7 +273,6 @@ public class LogInMenu extends JFrame {
 
 //==========================================> LOG IN CONDITION <========================================================
 
-    // You will check for the Correct Username and Password here.
     public void logInCondition() throws SQLException {
         if (Driver.dataAgent.getId(usernameField.getText().trim(),passwordField.getText().trim())!=-1){
             Driver.mail.loadUserdata(Driver.mail.getId(usernameField.getText().trim()));
@@ -421,6 +284,35 @@ public class LogInMenu extends JFrame {
         }
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btn_LogInn) {
+            try { logInCondition(); }
+            catch (SQLException ex) { ex.printStackTrace(); }
+        } else if (e.getSource() == btn_Return) {
+            dispose(); new MainMenu();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (JOptionPane.showConfirmDialog(LogInMenu.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            if (e.getSource() == passwordField || e.getSource() == btn_LogInn) {
+                try { logInCondition(); }
+                catch (SQLException ex) { ex.printStackTrace(); }
+            } else if (e.getSource() == btn_Return) {
+                dispose(); new MainMenu();
+            }
+        }
+    }
+    @Override
+    public void keyReleased(KeyEvent e) { }
 }
 
 //==========================================> END OF CODE <=============================================================

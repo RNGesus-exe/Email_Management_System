@@ -2,14 +2,15 @@
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
-import java.awt.font.TextAttribute;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.util.Map;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
 
-public class ComposeMail extends JFrame {
+public class ComposeMail extends JFrame implements ActionListener {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
@@ -20,7 +21,6 @@ public class ComposeMail extends JFrame {
     private JLabel closeLabel;
     private JLabel minusLabel;
     private JLabel mainLabel;
-    private JLabel infoLabel;
 
     private JLabel recipientLabel;
     private JLabel subjectLabel;
@@ -35,9 +35,7 @@ public class ComposeMail extends JFrame {
     private JButton btn_Send;
 
     private Font font;
-    private Map attributes;
-
-    private ImageIcon background;
+    private ImageIcon icon;
     private Image img;
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
@@ -62,17 +60,16 @@ public class ComposeMail extends JFrame {
         super.addMouseListener(frameDragListener);
         super.addMouseMotionListener(frameDragListener);
 
-        ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
-        setIconImage(icon.getImage());
-
 //==========================================> J-PANEL MAIN ICON <=======================================================
 
-        background = new ImageIcon("Icons/Main_Logo.png");
-        img = background.getImage();
-        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
-        background = new ImageIcon(img);
+        this.icon = new ImageIcon("Icons/Main_Logo.png");
+        setIconImage(icon.getImage());
 
-        JLabel mainIcon = new JLabel(background);
+        img = this.icon.getImage();
+        img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
+        this.icon = new ImageIcon(img);
+
+        JLabel mainIcon = new JLabel(this.icon);
         mainIcon.setBounds(05,05,40,40);
         mainIcon.setLayout(null);
 
@@ -95,7 +92,6 @@ public class ComposeMail extends JFrame {
         closeLabel.setBounds(575, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
         closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
-
         closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.setToolTipText("Close");
         closeLabel.addMouseListener(new MouseAdapter() {
@@ -111,7 +107,6 @@ public class ComposeMail extends JFrame {
         minusLabel.setBounds(550, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
         minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
-
         minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
         minusLabel.addMouseListener(new MouseAdapter() {
@@ -127,40 +122,6 @@ public class ComposeMail extends JFrame {
         mainLabel.setBounds(200, 10, 400, 50);
         mainLabel.setForeground(new Color(243, 241, 239));
         mainLabel.setFont(new Font("Arial", Font.BOLD, 24));
-
-//==========================================> INFO LABEL <==============================================================
-
-        font = new Font("Arial", Font.BOLD, 14);
-        infoLabel = new JLabel("Learn More!");
-        infoLabel.setBounds(500, 10, 100, 20);
-        infoLabel.setForeground(new Color(34, 167, 240));
-        infoLabel.setToolTipText("Press this Text to Read the Information");
-        infoLabel.setFont(font);
-
-        attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        infoLabel.setFont(font.deriveFont(attributes));
-
-//==========================================> ABOUT SECTION <===========================================================
-
-        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        infoLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                JTextArea textArea = new JTextArea(15, 50);
-                textArea.setLineWrap(true);
-                textArea.setText("Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello \n" +
-                        "Hello");
-                textArea.setEditable(false);
-
-                JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(ComposeMail.super.rootPane, scrollPane, "About Us", -1, null);
-            }
-        });
 
 //==========================================> RECIPIENT LABEL <==========================================================
 
@@ -196,22 +157,6 @@ public class ComposeMail extends JFrame {
         recipientField.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         recipientField.setCaretColor(Color.white);
         recipientField.setFont(font);
-        recipientField.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
 
 //==========================================> SUBJECT TEXT FIELD <======================================================
 
@@ -250,14 +195,7 @@ public class ComposeMail extends JFrame {
         btn_Discard.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Discard.setToolTipText("Discards Mail");
         btn_Discard.setFont(font);
-        btn_Discard.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Are you sure you want to discard the current mail?","Discard Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
-                    dispose();
-                }
-            }
-        });
+        btn_Discard.addActionListener(this);
 
 //==========================================> DRAFT BUTTON <===========================================================
 
@@ -268,21 +206,7 @@ public class ComposeMail extends JFrame {
         btn_Draft.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Draft.setToolTipText("Drafts Mail");
         btn_Draft.setFont(font);
-        btn_Draft.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (!(recipientField.getText().equals("") && textArea.getText().equals("") && subjectField.getText().equals(""))) {
-                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
-                    Driver.dataAgent.addMail(mailbody);
-                    dispose();
-                }
-                else if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Some Fields of mail are empty, Do you till want to save as draft?","Empty Fields in Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
-                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
-                    Driver.dataAgent.addMail(mailbody);
-                    dispose();
-                }
-            }
-        });
+        btn_Draft.addActionListener(this);
 
 //==========================================> SEND BUTTON <===========================================================
 
@@ -293,21 +217,7 @@ public class ComposeMail extends JFrame {
         btn_Send.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
         btn_Send.setToolTipText("Send Mail");
         btn_Send.setFont(font);
-        btn_Send.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (recipientField.getText().equals("")) {
-                    JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"You cannot send a mail with no recipient!","Empty Recipient",JOptionPane.ERROR_MESSAGE);
-                }
-                else if (Driver.mail.checkMultipleUsers(recipientField.getText())!=null) {
-                    JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"The entered recipient "+Driver.mail.checkMultipleUsers(recipientField.getText())+" doesn't exist!","Invalid Recipient",JOptionPane.ERROR_MESSAGE);
-                } else {
-                    MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,true,false,false,0,0);
-                    Driver.dataAgent.addMail(mailbody);
-                    dispose();
-                }
-            }
-        });
+        btn_Send.addActionListener(this);
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
@@ -317,7 +227,6 @@ public class ComposeMail extends JFrame {
         titleBar.add(minusLabel);
 
         mainBody.add(mainLabel);
-        mainBody.add(infoLabel);
         mainBody.add(recipientLabel);
         mainBody.add(subjectLabel);
         mainBody.add(textLabel);
@@ -337,6 +246,36 @@ public class ComposeMail extends JFrame {
 
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btn_Discard) {
+            if (JOptionPane.showConfirmDialog(ComposeMail.this, "Are you sure you want to discard the current mail?","Discard Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
+                dispose();
+            }
+        } else if (e.getSource() == btn_Draft) {
+            if (!(recipientField.getText().equals("") && textArea.getText().equals("") && subjectField.getText().equals(""))) {
+                MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                Driver.dataAgent.addMail(mailbody);
+                dispose();
+            }
+            else if (JOptionPane.showConfirmDialog(ComposeMail.this, "Some Fields of mail are empty, Do you till want to save as draft?","Empty Fields in Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
+                MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                Driver.dataAgent.addMail(mailbody);
+                dispose();
+            }
+        } else if (e.getSource() == btn_Send) {
+            if (recipientField.getText().equals("")) {
+                JOptionPane.showMessageDialog(ComposeMail.this,"You cannot send a mail with no recipient!","Empty Recipient",JOptionPane.ERROR_MESSAGE);
+            }
+            else if (Driver.mail.checkMultipleUsers(recipientField.getText())!=null) {
+                JOptionPane.showMessageDialog(ComposeMail.this,"The entered recipient "+Driver.mail.checkMultipleUsers(recipientField.getText())+" doesn't exist!","Invalid Recipient",JOptionPane.ERROR_MESSAGE);
+            } else {
+                MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,true,false,false,0,0);
+                Driver.dataAgent.addMail(mailbody);
+                dispose();
+            }
+        }
+    }
 }
 
 //==========================================> END OF CODE <=============================================================
