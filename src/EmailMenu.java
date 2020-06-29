@@ -44,8 +44,9 @@ public class EmailMenu extends JFrame implements ActionListener {
     private JButton btn_AllMail;
     private JButton btn_Spam;
     private JButton btn_Trash;
-    private JButton button = new JButton();  //Used in JTable
     private JButton btn_Group;
+    private JButton btn_Refresh;
+    private JButton button = new JButton();  //Used in JTable
 
     private JScrollPane jScrollPane;
     private JTable jTable;
@@ -53,7 +54,7 @@ public class EmailMenu extends JFrame implements ActionListener {
     private TableCellRenderer tableRenderer;
     private DefaultTableModel model;
 
-    private int y_Axis = 150;
+    private int y_Axis = 135;
     private Font font;
 
     public EmailMenu() {
@@ -181,8 +182,19 @@ public class EmailMenu extends JFrame implements ActionListener {
 
 //==========================================> Group Button <============================================================
 
+        btn_Refresh = new JButton("Refresh");
+        btn_Refresh.setBounds(100, 135, 100, 30);
+        btn_Refresh.setBackground(new Color(34, 167, 240));
+        btn_Refresh.setForeground(new Color(243, 241, 239));
+        btn_Refresh.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
+        btn_Refresh.setToolTipText("Refreshes the Data");
+        btn_Refresh.setFont(font);
+        btn_Refresh.addActionListener(this);
+
+//==========================================> Group Button <============================================================
+
         btn_Group = new JButton("Groups");
-        btn_Group.setBounds(100, 150, 100, 30);
+        btn_Group.setBounds(100, 185, 100, 30);
         btn_Group.setBackground(new Color(34, 167, 240));
         btn_Group.setForeground(new Color(243, 241, 239));
         btn_Group.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -193,7 +205,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> COMPOSE BUTTON <==========================================================
 
         btn_Compose = new JButton("Compose");
-        btn_Compose.setBounds(100, 200, 100, 30);
+        btn_Compose.setBounds(100, 235, 100, 30);
         btn_Compose.setBackground(new Color(34, 167, 240));
         btn_Compose.setForeground(new Color(243, 241, 239));
         btn_Compose.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -203,7 +215,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> INBOX BUTTON <============================================================
 
         btn_Inbox = new JButton("Inbox : " + Driver.mail.getAmountOfInboxMails());
-        btn_Inbox.setBounds(100, 250, 100, 30);
+        btn_Inbox.setBounds(100, 285, 100, 30);
         btn_Inbox.setBackground(new Color(34, 167, 240));
         btn_Inbox.setForeground(new Color(243, 241, 239));
         btn_Inbox.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -214,7 +226,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> STARRED BUTTON <==========================================================
 
         btn_Starred = new JButton("Starred : " + Driver.mail.getAmountOfStarredMails());
-        btn_Starred.setBounds(100, 300, 100, 30);
+        btn_Starred.setBounds(100, 335, 100, 30);
         btn_Starred.setBackground(new Color(34, 167, 240));
         btn_Starred.setForeground(new Color(243, 241, 239));
         btn_Starred.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -225,7 +237,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> SENT BUTTON <=============================================================
 
         btn_Sent = new JButton("Sent : " + Driver.mail.getAmountOfSentMails());
-        btn_Sent.setBounds(100, 350, 100, 30);
+        btn_Sent.setBounds(100, 385, 100, 30);
         btn_Sent.setBackground(new Color(34, 167, 240));
         btn_Sent.setForeground(new Color(243, 241, 239));
         btn_Sent.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -236,7 +248,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> DRAFTS BUTTON <===========================================================
 
         btn_Draft = new JButton("Drafts : " + Driver.mail.getAmountOfDraftMails());
-        btn_Draft.setBounds(100, 400, 100, 30);
+        btn_Draft.setBounds(100, 435, 100, 30);
         btn_Draft.setBackground(new Color(34, 167, 240));
         btn_Draft.setForeground(new Color(243, 241, 239));
         btn_Draft.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -247,7 +259,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> ALL MAIN BUTTON <=========================================================
 
         btn_AllMail = new JButton("All Main : " + Driver.mail.getAllMails().size());
-        btn_AllMail.setBounds(100, 450, 100, 30);
+        btn_AllMail.setBounds(100, 485, 100, 30);
         btn_AllMail.setBackground(new Color(34, 167, 240));
         btn_AllMail.setForeground(new Color(243, 241, 239));
         btn_AllMail.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -258,7 +270,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> SPAM BUTTON <=============================================================
 
         btn_Spam = new JButton("Spam : " + Driver.mail.getSpam().size());
-        btn_Spam.setBounds(100, 500, 100, 30);
+        btn_Spam.setBounds(100, 535, 100, 30);
         btn_Spam.setBackground(new Color(34, 167, 240));
         btn_Spam.setForeground(new Color(243, 241, 239));
         btn_Spam.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -269,7 +281,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 //==========================================> TRASH BUTTON <============================================================
 
         btn_Trash = new JButton("Trash " + Driver.mail.getAmountOfTrashMails());
-        btn_Trash.setBounds(100, 550, 100, 30);
+        btn_Trash.setBounds(100, 585, 100, 30);
         btn_Trash.setBackground(new Color(34, 167, 240));
         btn_Trash.setForeground(new Color(243, 241, 239));
         btn_Trash.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
@@ -279,6 +291,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 
 //==========================================> ADDING ICONS <============================================================
 
+        addIcons("Icons/Refresh.png");
         addIcons("Icons/Group_Icon.png");
         addIcons("Icons/Compose.png");
         addIcons("Icons/Inbox.png");
@@ -323,6 +336,8 @@ public class EmailMenu extends JFrame implements ActionListener {
         mainBody.add(mainLabel);
         mainBody.add(btn_Account);
         mainBody.add(btn_LogOut);
+        mainBody.add(btn_Refresh);
+        mainBody.add(btn_Group);
         mainBody.add(btn_Compose);
         mainBody.add(btn_Inbox);
         mainBody.add(btn_Starred);
@@ -331,7 +346,6 @@ public class EmailMenu extends JFrame implements ActionListener {
         mainBody.add(btn_AllMail);
         mainBody.add(btn_Spam);
         mainBody.add(btn_Trash);
-        mainBody.add(btn_Group);
 
         mainBody.add(jTablePanel);
 
@@ -346,7 +360,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 
 //==========================================> SET BUTTON ICONS <========================================================
 
-    public void addIcons(String iconPath) {
+    public void addIcons(String iconPath)   {
         ImageIcon background = new ImageIcon(iconPath);
         Image img = background.getImage();
         img = img.getScaledInstance(30,30,Image.SCALE_SMOOTH);
@@ -531,8 +545,7 @@ public class EmailMenu extends JFrame implements ActionListener {
             super(checkBox);
         }
 
-        public Component getTableCellEditorComponent(JTable table, Object value,
-                                                     boolean isSelected, int row, int column) {
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
             button.setText(label);
             return button;
         }
@@ -640,6 +653,8 @@ public class EmailMenu extends JFrame implements ActionListener {
                 mails[i][1] = dataValues.get(i).getSubject();
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
+        } else if (e.getSource() == btn_Refresh) {
+            JOptionPane.showMessageDialog(this, "Line no 657 -> Action Listener");
         } else {
             JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
         }

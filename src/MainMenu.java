@@ -115,7 +115,7 @@ public class MainMenu extends JFrame implements ActionListener, KeyListener {
 //==========================================> INFO LABEL <==============================================================
 
         infoLabel = new JLabel("Learn More...!");
-        infoLabel.setBounds(380, 10, 100, 20);
+        infoLabel.setBounds(380, 10, 120, 20);
         infoLabel.setForeground(new Color(34, 167, 240));
         infoLabel.setToolTipText("Click to Read the Info of E.M.S");
 
