@@ -37,7 +37,7 @@ public class DatabaseManager {
             {"Terms", "Traffic", "Trial"},
             {"Unlimited", "Urgent", "Weight"},
             {"While", "supplies last", "Win"},
-            {"25 din","ma","paisa double"}
+            {"25 din","mei","paisa double"}
     };
 
     private Connection connection;

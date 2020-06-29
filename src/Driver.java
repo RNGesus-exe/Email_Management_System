@@ -2,7 +2,6 @@ import javax.swing.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-
 public class Driver {
 
     public static Mail mail = new Mail();                  //Handles all Users Data in RAM

@@ -10,7 +10,7 @@ import java.awt.geom.RoundRectangle2D;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
-public class EmailMenu extends JFrame implements ActionListener{
+public class EmailMenu extends JFrame implements ActionListener {
 
     private int button_id;
     /**
@@ -77,17 +77,16 @@ public class EmailMenu extends JFrame implements ActionListener{
         super.addMouseListener(frameDragListener);
         super.addMouseMotionListener(frameDragListener);
 
+//==========================================> J-PANEL MAIN ICON <=======================================================
+
         ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
         setIconImage(icon.getImage());
 
-//==========================================> J-PANEL MAIN ICON <=======================================================
-
-        ImageIcon background = new ImageIcon("Icons/Main_Logo.png");
-        Image img = background.getImage();
+        Image img = icon.getImage();
         img = img.getScaledInstance(50,50,Image.SCALE_SMOOTH);
-        background = new ImageIcon(img);
+        icon = new ImageIcon(img);
 
-        JLabel mainIcon = new JLabel(background);
+        JLabel mainIcon = new JLabel(icon);
         mainIcon.setBounds(0,0,50,50);
         mainIcon.setLayout(null);
 
@@ -132,7 +131,6 @@ public class EmailMenu extends JFrame implements ActionListener{
         minusLabel.setBounds(1150, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
         minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
-
         minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
         minusLabel.addMouseListener(new MouseAdapter() {
@@ -172,7 +170,6 @@ public class EmailMenu extends JFrame implements ActionListener{
         btn_LogOut.setToolTipText("Logs Out from the Account");
         btn_LogOut.setFont(font);
         btn_LogOut.addActionListener(e -> {
-
             if (JOptionPane.showConfirmDialog(EmailMenu.this, "Are you sure you want to exit?", "Exit Email System", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == 0) {
                 Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
                 dispose();
@@ -181,9 +178,8 @@ public class EmailMenu extends JFrame implements ActionListener{
             }
             Driver.dataAgent.updateUserDataBase(Driver.mail.getUser().getId());
         });
-//==========================================> Group Button <============================================================
 
-        font = new Font("Arial", Font.BOLD, 14);
+//==========================================> Group Button <============================================================
 
         btn_Group = new JButton("Groups");
         btn_Group.setBounds(100, 150, 100, 30);
@@ -194,10 +190,7 @@ public class EmailMenu extends JFrame implements ActionListener{
         btn_Group.setFont(font);
         btn_Group.addActionListener(e -> new Groups());
 
-
 //==========================================> COMPOSE BUTTON <==========================================================
-
-        font = new Font("Arial", Font.BOLD, 14);
 
         btn_Compose = new JButton("Compose");
         btn_Compose.setBounds(100, 200, 100, 30);
@@ -209,7 +202,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> INBOX BUTTON <============================================================
 
-        btn_Inbox = new JButton("Inbox");
+        btn_Inbox = new JButton("Inbox : " + Driver.mail.getAmountOfInboxMails());
         btn_Inbox.setBounds(100, 250, 100, 30);
         btn_Inbox.setBackground(new Color(34, 167, 240));
         btn_Inbox.setForeground(new Color(243, 241, 239));
@@ -220,7 +213,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> STARRED BUTTON <==========================================================
 
-        btn_Starred = new JButton("Starred");
+        btn_Starred = new JButton("Starred : " + Driver.mail.getAmountOfStarredMails());
         btn_Starred.setBounds(100, 300, 100, 30);
         btn_Starred.setBackground(new Color(34, 167, 240));
         btn_Starred.setForeground(new Color(243, 241, 239));
@@ -231,7 +224,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> SENT BUTTON <=============================================================
 
-        btn_Sent = new JButton("Sent");
+        btn_Sent = new JButton("Sent : " + Driver.mail.getAmountOfSentMails());
         btn_Sent.setBounds(100, 350, 100, 30);
         btn_Sent.setBackground(new Color(34, 167, 240));
         btn_Sent.setForeground(new Color(243, 241, 239));
@@ -242,7 +235,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> DRAFTS BUTTON <===========================================================
 
-        btn_Draft = new JButton("Drafts");
+        btn_Draft = new JButton("Drafts : " + Driver.mail.getAmountOfDraftMails());
         btn_Draft.setBounds(100, 400, 100, 30);
         btn_Draft.setBackground(new Color(34, 167, 240));
         btn_Draft.setForeground(new Color(243, 241, 239));
@@ -253,7 +246,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> ALL MAIN BUTTON <=========================================================
 
-        btn_AllMail = new JButton("All Main");
+        btn_AllMail = new JButton("All Main : " + Driver.mail.getAllMails().size());
         btn_AllMail.setBounds(100, 450, 100, 30);
         btn_AllMail.setBackground(new Color(34, 167, 240));
         btn_AllMail.setForeground(new Color(243, 241, 239));
@@ -264,7 +257,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> SPAM BUTTON <=============================================================
 
-        btn_Spam = new JButton("Spam");
+        btn_Spam = new JButton("Spam : " + Driver.mail.getSpam().size());
         btn_Spam.setBounds(100, 500, 100, 30);
         btn_Spam.setBackground(new Color(34, 167, 240));
         btn_Spam.setForeground(new Color(243, 241, 239));
@@ -275,7 +268,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
 //==========================================> TRASH BUTTON <============================================================
 
-        btn_Trash = new JButton("Trash");
+        btn_Trash = new JButton("Trash " + Driver.mail.getAmountOfTrashMails());
         btn_Trash.setBounds(100, 550, 100, 30);
         btn_Trash.setBackground(new Color(34, 167, 240));
         btn_Trash.setForeground(new Color(243, 241, 239));
@@ -303,12 +296,10 @@ public class EmailMenu extends JFrame implements ActionListener{
         jTablePanel.setBackground(new Color(52, 73, 94));
         jTablePanel.setLayout(new BorderLayout());
 
-
 //==========================================> J-TABLE EMAIL DISPLAY <===================================================
 
         jTableFunction();
         jTableCoordinatesFunction();
-
         jTable.addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent mouseEvent) {
 
@@ -317,15 +308,7 @@ public class EmailMenu extends JFrame implements ActionListener{
                 int row = table.rowAtPoint(point);
 
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                    /**
-                     * Set unread to false.
-                     **/
                     new ShowEmail((short)button_id);
-//                    jTableDataFunction(null);
-//                    jTable.setVisible(false);
-//                    jTablePanel.setVisible(false);
-//                    jShowMailPanel.setVisible(true);
-//                    mainBody.updateUI();
                 }
             }
         });
@@ -506,6 +489,7 @@ public class EmailMenu extends JFrame implements ActionListener{
 
         jTable.setRowHeight(25);
     }
+
 //=========================================>  JTable Button Helper Functions <==========================================
 
     static class ButtonRenderer extends JButton implements TableCellRenderer {

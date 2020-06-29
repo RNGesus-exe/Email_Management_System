@@ -10,7 +10,7 @@ import java.awt.geom.RoundRectangle2D;
 
 //==========================================> CLASS LOG IN MENU <=======================================================
 
-public class ShowEmail extends JFrame implements ActionListener{
+public class ShowEmail extends JFrame implements ActionListener {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
@@ -34,7 +34,6 @@ public class ShowEmail extends JFrame implements ActionListener{
     private ImageIcon background;
     private Image img;
     private Font font;
-    private Boolean flag = false;
     private short mailType = 0;
     /**
      * 1 : Inbox
@@ -161,6 +160,8 @@ public class ShowEmail extends JFrame implements ActionListener{
 
         if (mailType == 2) {
             btn_StarMail = new JButton("Un-Star Mail");
+        } else if (mailType == 6) {
+            btn_StarMail = new JButton("Restore Mail");
         } else {
             btn_StarMail = new JButton("Star Mail");
         }
@@ -257,7 +258,6 @@ public class ShowEmail extends JFrame implements ActionListener{
             if (mailType == 3) {
                 textArea.setEditable(true);
             } else {
-                flag = true;
                 replyMailFunction();
             }
         } else if (e.getSource() == btn_StarMail) {
@@ -268,7 +268,8 @@ public class ShowEmail extends JFrame implements ActionListener{
             }
         } else if (e.getSource() == btn_DeleteMail) {
             if (mailType == 6) {
-                //-- Perma Delete Mail
+                //-- Permanently Delete Mail
+                //-- Restore Deleted Mail
             } else {
                 //-- Delete Mail
             }
@@ -276,7 +277,7 @@ public class ShowEmail extends JFrame implements ActionListener{
             if (mailType == 3) {
                 textArea.setEditable(false);
                 //-- Save Mail
-            } else if (mailType == 3) {
+            } else {
                 new ComposeMail();
             }
         }
@@ -329,7 +330,7 @@ public class ShowEmail extends JFrame implements ActionListener{
         background = new ImageIcon(img);
 
         JLabel frameMainIcon = new JLabel(background);
-        frameMainIcon.setBounds(05,05,40,40);
+        frameMainIcon.setBounds(5,5,40,40);
         frameMainIcon.setLayout(null);
 
 //==========================================> J-PANEL MAIN BODY <=======================================================
@@ -442,16 +443,54 @@ public class ShowEmail extends JFrame implements ActionListener{
         frameMainBody.add(btn_frameSendMail);
         frameMainBody.add(btn_frameDiscard);
 
-        if (flag) {
-            flag = false;
-            frame.dispose();
-        }
-
         frame.add(frameTitleBar);
         frame.add(frameMainBody);
 
         frame.setVisible(true);
 
+        new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (e.getSource() == btn_frameDraftMail) {
+                    /**
+                     * Send the Written Email To Drafts.
+                     *
+                        if (!(recipientField.getText().equals("") && textArea.getText().equals("") && subjectField.getText().equals(""))) {
+                            MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                            Driver.dataAgent.addMail(mailbody);
+                            dispose();
+                        }
+                        else if (JOptionPane.showConfirmDialog(ComposeMail.super.rootPane, "Some Fields of mail are empty, Do you till want to save as draft?","Empty Fields in Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
+                            MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,false,true,false,0,0);
+                            Driver.dataAgent.addMail(mailbody);
+                            dispose();
+                        }
+                    */
+                } else if (e.getSource() == btn_frameSendMail) {
+                    /**
+                     * Send the Written Email To Recipient.
+                     *
+                        if (recipientField.getText().equals("")) {
+                            JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"You cannot send a mail with no recipient!","Empty Recipient",JOptionPane.ERROR_MESSAGE);
+                        }
+                        else if (Driver.mail.checkMultipleUsers(recipientField.getText())!=null) {
+                            JOptionPane.showMessageDialog(ComposeMail.super.rootPane,"The entered recipient "+Driver.mail.checkMultipleUsers(recipientField.getText())+" doesn't exist!","Invalid Recipient",JOptionPane.ERROR_MESSAGE);
+                        } else {
+                            MailBody mailbody = new MailBody(recipientField.getText(),Driver.mail.getUser().getUsername(),textArea.getText(),subjectField.getText(),false,false,false,true,false,false,0,0);
+                            Driver.dataAgent.addMail(mailbody);
+                            dispose();
+                        }
+                     */
+                } else if (e.getSource() == btn_frameDiscard) {
+                    /**
+                     * Discards the Written Email.
+                     */
+                    if (JOptionPane.showConfirmDialog(ShowEmail.this, "Are you sure you want to discard the current mail?","Discard Mail", JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE) == 0) {
+                        dispose();
+                    }
+                }
+            }
+        };
     }
 }
 

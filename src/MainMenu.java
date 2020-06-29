@@ -9,7 +9,7 @@ import java.util.Map;
 
 //==========================================> CLASS MAIN MENU <=========================================================
 
-public class MainMenu extends JFrame {
+public class MainMenu extends JFrame implements ActionListener, KeyListener {
 
 //==========================================> PRIVATE DATA MEMBERS <====================================================
 
@@ -21,7 +21,6 @@ public class MainMenu extends JFrame {
     private JLabel titleLabel;
     private JLabel closeLabel;
     private JLabel minusLabel;
-
     private JLabel mainLabel;
     private JLabel infoLabel;
 
@@ -50,17 +49,16 @@ public class MainMenu extends JFrame {
         super.addMouseListener(frameDragListener);
         super.addMouseMotionListener(frameDragListener);
 
+//==========================================> J-PANEL MAIN ICON <=======================================================
+
         ImageIcon icon = new ImageIcon("Icons/Main_Logo.png");
         setIconImage(icon.getImage());
 
-//==========================================> J-PANEL MAIN ICON <=======================================================
-
-        ImageIcon background = new ImageIcon("Icons/Main_Logo.png");
-        Image img = background.getImage();
+        Image img = icon.getImage();
         img = img.getScaledInstance(40,40,Image.SCALE_SMOOTH);
-        background = new ImageIcon(img);
+        icon = new ImageIcon(img);
 
-        JLabel mainIcon = new JLabel(background);
+        JLabel mainIcon = new JLabel(icon);
         mainIcon.setBounds(05,05,40,40);
         mainIcon.setLayout(null);
 
@@ -83,9 +81,8 @@ public class MainMenu extends JFrame {
         closeLabel.setBounds(475, 15, 25, 22);
         closeLabel.setForeground(new Color(255, 0, 0));
         closeLabel.setFont(new Font("Arial", Font.BOLD, 22));
-
-        closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.setToolTipText("Close");
+        closeLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         closeLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -99,9 +96,8 @@ public class MainMenu extends JFrame {
         minusLabel.setBounds(450, 0, 25, 44);
         minusLabel.setForeground(new Color(0, 0, 0));
         minusLabel.setFont(new Font("Arial", Font.BOLD, 44));
-
-        minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.setToolTipText("Minimize");
+        minusLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         minusLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -121,9 +117,9 @@ public class MainMenu extends JFrame {
         infoLabel = new JLabel("Learn More...!");
         infoLabel.setBounds(380, 10, 100, 20);
         infoLabel.setForeground(new Color(34, 167, 240));
-        infoLabel.setToolTipText("Press this Text to Read the Information");
+        infoLabel.setToolTipText("Click to Read the Info of E.M.S");
 
-        font = new Font("Arial", Font.BOLD, 14);
+        font = new Font("Arial", Font.BOLD, 16);
         infoLabel.setFont(font);
 
         Map attributes = font.getAttributes();
@@ -143,49 +139,21 @@ public class MainMenu extends JFrame {
                 textArea.setEditable(false);
 
                 JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(MainMenu.super.rootPane, scrollPane, "About Us", -1, null);
+                JOptionPane.showMessageDialog(MainMenu.this, scrollPane, "About Us", -1, null);
             }
         });
 
 //==========================================> SIGN UP BUTTON <==========================================================
-
-        font = new Font("Arial", Font.BOLD, 16);
 
         btn_SignUp = new JButton("Sign Up");
         btn_SignUp.setBounds(100, 175, 120, 30);
         btn_SignUp.setBackground(new Color(242, 38, 19));
         btn_SignUp.setForeground(new Color(243, 241, 239));
         btn_SignUp.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_SignUp.setToolTipText("Allows you yo create a new Account");
+        btn_SignUp.setToolTipText("Click to Sign Up");
         btn_SignUp.setFont(font);
-
-        btn_SignUp.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new SignUpMenu();
-            }
-        });
-        btn_SignUp.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    dispose();
-                    new SignUpMenu();
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog (MainMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        btn_SignUp.addActionListener(this);
+        btn_SignUp.addKeyListener(this);
 
 //==========================================> LOG INN BUTTON <==========================================================
 
@@ -194,36 +162,10 @@ public class MainMenu extends JFrame {
         btn_LogInn.setBackground(new Color(34, 167, 240));
         btn_LogInn.setForeground(new Color(243, 241, 239));
         btn_LogInn.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
-        btn_LogInn.setToolTipText("Allows you to log into your Account");
+        btn_LogInn.setToolTipText("Click to Log In");
         btn_LogInn.setFont(font);
-
-        btn_LogInn.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                dispose();
-                new LogInMenu();
-            }
-        });
-        btn_LogInn.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    dispose();
-                    new LogInMenu();
-                }
-                else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog (MainMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        dispose();
-                    }
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
+        btn_LogInn.addActionListener(this);
+        btn_LogInn.addKeyListener(this);
 
 //==========================================> ADDING FUNCTIONALITIES <==================================================
 
@@ -243,9 +185,35 @@ public class MainMenu extends JFrame {
 //==========================================> SET VISIBLE TRUE <========================================================
 
         setVisible(true);
-
     }
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == btn_SignUp) {
+            dispose();
+            new SignUpMenu();
+        } else if (e.getSource() == btn_LogInn) {
+            dispose();
+            new LogInMenu();
+        }
+    }
+
+    @Override
+    public void keyTyped(KeyEvent e) { }
+    @Override
+    public void keyPressed(KeyEvent e) {
+        if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+            if (JOptionPane.showConfirmDialog (MainMenu.super.rootPane, "Do you want to Exit?","Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
+                dispose();
+            }
+        } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            dispose();
+            if (e.getSource() == btn_SignUp) { new SignUpMenu(); }
+            else if (e.getSource() == btn_LogInn) { new LogInMenu(); }
+        }
+    }
+    @Override
+    public void keyReleased(KeyEvent e) { }
 }
 
 //==========================================> END OF CODE <=============================================================

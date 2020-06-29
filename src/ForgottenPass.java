@@ -447,24 +447,18 @@ public class ForgottenPass{
         JLabel closeLabel;
         JLabel minusLabel;
         JLabel mainLabel;
-        JLabel infoLabel;
-
-        JLabel usernameLabel;
         JLabel passwordLabel;
         JLabel confirmPassLabel;
 
-        JTextField     usernameField;
         JPasswordField passwordField;
         JPasswordField confirmPassField;
 
         JButton btn_Return;
         JButton btn_LogInn;
 
-        Font font;
-        Map attributes;
-
         ImageIcon background;
         Image img;
+        Font font;
 
 //==========================================> MAIN J-FRAME <============================================================
 
@@ -550,36 +544,9 @@ public class ForgottenPass{
         mainLabel.setForeground(new Color(243, 241, 239));
         mainLabel.setFont(new Font("Arial", Font.BOLD, 28));
 
-//==========================================> INFO LABEL <==============================================================
+//==========================================> PASSWORD LABEL <==========================================================
 
         font = new Font("Arial", Font.BOLD, 14);
-        infoLabel = new JLabel("Learn More!");
-        infoLabel.setBounds(400, 10, 100, 20);
-        infoLabel.setForeground(new Color(34, 167, 240));
-        infoLabel.setToolTipText("Press this Text to Read the Information");
-        infoLabel.setFont(font);
-
-        attributes = font.getAttributes();
-        attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
-        infoLabel.setFont(font.deriveFont(attributes));
-
-//==========================================> ABOUT SECTION <===========================================================
-
-        infoLabel.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        infoLabel.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-
-                JTextArea textArea = new JTextArea(15, 50);
-                textArea.setLineWrap(true);
-                textArea.setText("Hello \n" + "Hello \n" + "Hello \n" + "Hello \n" + "Hello");
-                textArea.setEditable(false);
-
-                JScrollPane scrollPane = new JScrollPane(textArea);
-                JOptionPane.showMessageDialog(frame2, scrollPane, "About Us", -1, null);
-            }
-        });
-//==========================================> PASSWORD LABEL <==========================================================
 
         passwordLabel = new JLabel("New Password");
         passwordLabel.setBounds(50, 150, 120, 20);
@@ -676,25 +643,6 @@ public class ForgottenPass{
                 new MainMenu();
             }
         });
-        btn_Return.addKeyListener(new KeyListener() {
-            @Override
-            public void keyTyped(KeyEvent e) { }
-
-            @Override
-            public void keyPressed(KeyEvent e) {
-                if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
-                    if (JOptionPane.showConfirmDialog(frame2, "Do you want to Exit?", "Warning!", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE) == JOptionPane.YES_OPTION) {
-                        frame2.dispose();
-                    }
-                } else if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-                    frame2.dispose();
-                    new MainMenu();
-                }
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) { }
-        });
 
 //==========================================> LOG IN BUTTON <===========================================================
 
@@ -739,7 +687,6 @@ public class ForgottenPass{
         titleBar.add(minusLabel);
 
         mainBody.add(mainLabel);
-        mainBody.add(infoLabel);
         mainBody.add(passwordLabel);
         mainBody.add(confirmPassLabel);
         mainBody.add(passwordField);
