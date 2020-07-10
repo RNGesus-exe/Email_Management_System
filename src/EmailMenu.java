@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.geom.RoundRectangle2D;
-import java.sql.SQLException;
 import java.util.ArrayList;
 
 public class EmailMenu extends JFrame implements ActionListener {
@@ -579,11 +578,7 @@ public class EmailMenu extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            Driver.mail.loadUserdata(Driver.mail.getUser().getId());
-        } catch (SQLException ex) {
-            ex.printStackTrace();
-        }
+        Driver.mail.loadUserdata(Driver.mail.getUser().getId());
         if (e.getSource() == btn_Inbox) {
             button_id = 1;
             dataValues = Driver.mail.getInbox();
@@ -658,6 +653,8 @@ public class EmailMenu extends JFrame implements ActionListener {
         } else {
             JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
         }
+        Driver.mail.updateUserdata(Driver.mail.getUser().getId());
+        Driver.mail.loadUserdata(Driver.mail.getUser().getId());
         model.fireTableDataChanged();
         jTableDataFunction(mails);
     }

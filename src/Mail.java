@@ -1,5 +1,4 @@
 import java.sql.Date;
-import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +68,7 @@ public class Mail {
         return null;
     }
 
-    public void loadUserdata(int id) throws SQLException {
+    public void loadUserdata(int id) {
         Driver.dataAgent.loadUserDataFromDataBase(id);
     }
 

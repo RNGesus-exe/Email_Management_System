@@ -402,10 +402,10 @@ public class DatabaseManager {
         while (rs.next()) {
             MailBody sentMail = new MailBody();
             sentMail.setId(rs.getInt(1));
-            sentMail.setRecipient("Me");
+            sentMail.setRecipient(getUsername(rs.getInt(2)));
             sentMail.setSubject(rs.getString(3));
             sentMail.setText(rs.getString(4));
-            sentMail.setSender(getUsername(id));
+            sentMail.setSender("Me");
              /*
             1-UnRead - Inbox
             2-Read - Inbox   //The mail cannot be read until it isn't in unread form first
@@ -436,11 +436,16 @@ public class DatabaseManager {
         return mails;
     }
 
-    public void loadUserDataFromDataBase(int id) throws SQLException {
-        Driver.mail.setUser(loadUserInfoFromDataBase(id));
-        Driver.mail.setMails(loadUserMailsFromDataBase(id));
-        Driver.mail.setSent(loadUserSentMailsFromDataBase(id));
-        Driver.mail.setDraft(loadUserDraftMailsFromDataBase(id));
+    public void loadUserDataFromDataBase(int id){
+        try {
+            Driver.mail.setUser(loadUserInfoFromDataBase(id));
+            Driver.mail.setMails(loadUserMailsFromDataBase(id));
+            Driver.mail.setSent(loadUserSentMailsFromDataBase(id));
+            Driver.mail.setDraft(loadUserDraftMailsFromDataBase(id));
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     private void setChild(int parent_id, int child_id) throws SQLException {
