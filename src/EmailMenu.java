@@ -654,7 +654,14 @@ public class EmailMenu extends JFrame implements ActionListener {
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
         } else if (e.getSource() == btn_Refresh) {
-            JOptionPane.showMessageDialog(this, "Line no 657 -> Action Listener");
+            for (int i = 0; i < jTable.getRowCount(); i++) {
+                Driver.mail.updateUserdata(i);
+                try {
+                    Driver.mail.loadUserdata(i);
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
         } else {
             JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
         }
