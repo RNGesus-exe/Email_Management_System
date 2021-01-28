@@ -320,7 +320,7 @@ public class EmailMenu extends JFrame implements ActionListener {
                 int row = table.rowAtPoint(point);
 
                 if (mouseEvent.getClickCount() == 2 && table.getSelectedRow() != -1) {
-                    new ShowEmail((short)button_id);
+                    new ShowEmail((short)button_id, table.getSelectedRow());
                 }
             }
         });
@@ -579,7 +579,14 @@ public class EmailMenu extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         Driver.mail.loadUserdata(Driver.mail.getUser().getId());
-        if (e.getSource() == btn_Inbox) {
+        if (e.getSource() == btn_Refresh) {
+
+            this.invalidate();
+            this.validate();
+            this.repaint();
+
+        }
+        else if (e.getSource() == btn_Inbox) {
             button_id = 1;
             dataValues = Driver.mail.getInbox();
             mails = new String[dataValues.size()][5];
@@ -648,9 +655,7 @@ public class EmailMenu extends JFrame implements ActionListener {
                 mails[i][1] = dataValues.get(i).getSubject();
                 mails[i][2] = dataValues.get(i).getDateTime().toString();
             }
-        } else if (e.getSource() == btn_Refresh) {
-            JOptionPane.showMessageDialog(this, "Line no 657 -> Action Listener");
-        } else {
+        }  else {
             JOptionPane.showMessageDialog(null, "I don't know how you did this but pls teach me also.", "Legal Error! A.K.A Jahanzaib Error!", JOptionPane.ERROR_MESSAGE);
         }
         Driver.mail.updateUserdata(Driver.mail.getUser().getId());

@@ -47,7 +47,7 @@ public class ShowEmail extends JFrame implements ActionListener {
 
 //==========================================> DEFAULT CONSTRUCTOR <=====================================================
 
-    public ShowEmail(short btnPressChecker) {
+    public ShowEmail(short btnPressChecker, int mailIndex) {
 
         mailType = btnPressChecker;
 
@@ -206,7 +206,9 @@ public class ShowEmail extends JFrame implements ActionListener {
         textPane.setBackground(new Color(52, 73, 94));
         textPane.setBorder(BorderFactory.createEmptyBorder(0,0,0,0));
 
-        textArea = new JTextArea();
+        String data = "Sender: " + Driver.mail.getInbox().get(mailIndex).getSender() + "\nSubject: " + Driver.mail.getInbox().get(mailIndex).getSubject() +
+                "\nText: " + Driver.mail.getInbox().get(mailIndex).getText().toString();
+        textArea = new JTextArea(data);
         textArea.setBounds(25, 25, 650, 450);
         textArea.setBackground(new Color(46, 49, 49));
         textArea.setForeground(new Color(243, 241, 239));
